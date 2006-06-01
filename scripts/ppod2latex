@@ -1,0 +1,27 @@
+#!perl
+
+use strict;
+use warnings;
+
+use File::Basename;
+use File::Spec::Functions;
+use Pod::PseudoPod::LaTeX;
+
+die "$0 <files to pdfify>\n" unless @ARGV;
+
+for my $file (@ARGV)
+{
+	die "Cannot read '$file': $!\n" unless -e $file;
+	my $outfile   = catfile(
+		'build',
+		(fileparse( $file, qr/\.pod$/ ))[0] . '.tex'
+	);
+	open( my $fh, '>', $outfile ) or die "Can't write to '$outfile': $!\n";
+
+	my $parser    = Pod::PseudoPod::LaTeX->new();
+	$parser->output_fh( $fh );
+
+	warn "$file -> $outfile\n";
+
+	$parser->parse_file( $file );
+}

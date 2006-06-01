@@ -1,0 +1,30 @@
+=head0 Some Document
+
+Here is some ignorable text.
+
+=head1 A Heading
+
+=begin programlisting
+
+  "This text should not be escaped -- it is normal $text."
+
+=end programlisting
+
+  This indented text should come through unmodified too -- it is also "normal"
+  $text.
+
+=head2 B heading
+
+Encode the noble octothorpe, #, and the slash used for escaping: \.  There are
+lots of other escapable characters, including $ & % and _.  The curly braces,
+{}, get escaped too.  The tilde, ~, has something special too.
+
+"The interesting thing is that when you use double quotes," he said, "they turn
+into double single quotes going in the correct direction."
+
+=head3 c heading
+
+When you leave out words, add an ellipsis... and get out an escaped version.
+
+Words like flame, filk, and ineffable have interesting ligatures -- and you
+need a bit of work to make the typography work out nicely.
