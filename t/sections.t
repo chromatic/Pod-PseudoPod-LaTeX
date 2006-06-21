@@ -6,7 +6,7 @@ use warnings;
 use IO::String;
 use File::Spec::Functions;
 
-use Test::More 'no_plan'; # tests => 20;
+use Test::More tests => 15;
 
 use_ok( 'Pod::PseudoPod::LaTeX' ) or exit;
 
@@ -29,3 +29,39 @@ like( $text, qr/\\subsection\*{B heading}/,
 
 like( $text, qr/\\subsubsection\*{c heading}/,
 	'C heads should become subsubsection titles' );
+
+like( $text, qr/\\begin{verbatim}.+"This text.+--.+\$text."\\end{verbatim}/s,
+	'programlistings should become unescaped, verbatim text' );
+
+like( $text, qr/Blockquoted text.+``escaped''\./,
+	'blockquoted text gets escaped' );
+
+like( $text, qr/\\flushleft\n\\begin{description}\n\n\\item\[\] Verbatim\n\n/,
+	'text-item lists need description formatting to start' );
+
+like( $text, qr/\\item\[\] items\n\n\\end{description}/,
+	'... and to end' );
+
+like( $text, qr/rule too:\n\n\\flushleft\n\\begin{itemize}\n\n\\item BANG\n\n/,
+	'bulleted lists need itemized formatting to start' );
+
+like( $text, qr/\\item BANGERANG!\n\n\\end{itemize}/,
+	'... and to end' );
+
+like( $text,
+	qr/\\flushleft\n\\begin{description}\n\n\\item\[\] wakawaka\n\nWhat/,
+	'definition lists need description formatting to start' );
+
+like( $text, qr/\\item\[\] ook ook\n\nWhat.+says\.\n\n\\end{description}/,
+	'... and to end' );
+
+TODO:
+{
+	local $TODO = "Seems like an upstream bug here\n";
+
+	like( $text, qr/\\flushleft\n\begin{enumerate}\n\n\\item \[22\] First\n\n/,
+		'enumerated lists need their numbers intact' );
+
+	like( $text, qr/\\item \[77\]\n\nFooled you!\n\n\\end{itemize}/,
+		'... and their itemized endings okay' );
+}

@@ -48,7 +48,7 @@ sub encode_text
 	$text =~ s/(^|\s)"/$1``/g;
 
 	# and the right ending quotes
-	$text =~ s/"(\s|$)/''$1/g;
+	$text =~ s/"(\W|$)/''$1/g;
 
 	# fix the ellipses
 	$text =~ s/\.{3}\s*/\\ldots /g;
@@ -179,13 +179,13 @@ BEGIN
 		my $start_sub = sub 
 		{
 			my $self = shift;
-			$self->{scratch} .= "\\flushleft\n\\begin{$listtype->[1]}\n";
+			$self->{scratch} .= "\\flushleft\n\\begin{$listtype->[1]}\n\n";
 		};
 
 		my $end_sub = sub
 		{
 			my $self = shift;
-			$self->{scratch} .= "\\end{$listtype->[1]}\n";
+			$self->{scratch} .= "\\end{$listtype->[1]}\n\n";
 			$self->emit();
 		};
 
@@ -204,6 +204,8 @@ sub start_item_bullet
 sub start_item_number
 {
 	my ($self, $flags) = @_;
+	use Data::Dumper;
+	warn Dumper $flags;
 	$self->{scratch}  .= "\\item[$flags->{number}] ";
 }
 
@@ -220,6 +222,7 @@ BEGIN
 		my $end_sub = sub
 		{
 			my $self = shift;
+			$self->{scratch} .= "\n\n";
 			$self->emit();
 		};
 

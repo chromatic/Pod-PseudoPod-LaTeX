@@ -13,6 +13,12 @@ Here is some ignorable text.
   This indented text should come through unmodified too -- it is also "normal"
   $text.
 
+=begin blockquote
+
+Blockquoted text may or may not need "escaped".  I haven't decided.
+
+=end blockquote
+
 =head2 B heading
 
 Encode the noble octothorpe, #, and the slash used for escaping: \.  There are
@@ -28,3 +34,66 @@ When you leave out words, add an ellipsis... and get out an escaped version.
 
 Words like flame, filk, and ineffable have interesting ligatures -- and you
 need a bit of work to make the typography work out nicely.
+
+Diacritics are more difficult E<aacute> la the naE<iuml>ve attachE<egrave> and
+the E<copy> caper, E<plusmn> some constant.
+
+X<Special formatting> is B<very> important, especially in C<code-like text>,
+for special F<emphasis>, and I<semantic-only emphasis>N<but beware of
+footnotes!>.
+
+Lists are fun:
+
+=over 4
+
+=item Verbatim
+
+=item List
+
+=item items
+
+=back
+
+Bulleted lists rule too:
+
+=over 4
+
+=item * BANG
+
+=item * BANG BANG
+
+=item * BANGERANG!
+
+=back
+
+Definition lists are useful:
+
+=over 4
+
+=item wakawaka
+
+What Pac-Man says.
+
+=item ook ook
+
+What the librarian says.
+
+=back
+
+Numeric lists are more fun:
+
+=over 4
+
+=item 2
+
+First
+
+=item 33
+
+Second
+
+=item 77
+
+Fooled you!
+
+=back
