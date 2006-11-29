@@ -6,7 +6,7 @@ use warnings;
 use IO::String;
 use File::Spec::Functions;
 
-use Test::More tests => 14;
+use Test::More tests => 15;
 
 use_ok( 'Pod::PseudoPod::LaTeX' ) or exit;
 
@@ -29,6 +29,8 @@ like( $text, qr/na\\"ive/,
 
 like( $text, qr/attach\\`e/,
 	'grave diacritic should translate to single backquote escape' );
+
+like( $text, qr/Fran\\caise/, 'cedilla should translate to \c' );
 
 like( $text, qr/\\copyright caper/, 'copyright symbol should get escaped' );
 

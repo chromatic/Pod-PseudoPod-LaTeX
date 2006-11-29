@@ -118,12 +118,13 @@ sub start_E
 
 my %characters =
 (
-	acute => sub { qq|\\'| . shift },
-	grave => sub { qq|\\`| . shift },
-	uml   => sub { qq|\\"| . shift },
-	opy   => sub { '\copyright' },
-	dash  => sub { '---' },
-	lusmn => sub { '\pm' },
+	acute   => sub { qq|\\'| . shift },
+	grave   => sub { qq|\\`| . shift },
+	uml     => sub { qq|\\"| . shift },
+	cedilla => sub { '\c' },
+	opy     => sub { '\copyright' },
+	dash    => sub { '---' },
+	lusmn   => sub { '\pm' },
 );
 
 sub end_E
