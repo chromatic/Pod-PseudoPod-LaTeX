@@ -5,259 +5,540 @@ use base 'Pod::PseudoPod';
 use strict;
 use warnings;
 
-our $VERSION = '0.10';
+our $VERSION = '1.000';
 
 sub new
 {
-	my ($class, %args)  = @_;
-	my $self            = $class->SUPER::new( %args );
-	$self->accept_targets_as_text( qw( blockquote programlisting ));
-	$self->{scratch}  ||= '';
-	$self->{stack}      = [];
-	return $self;
+    my ( $class, %args ) = @_;
+    my $self             = $class->SUPER::new(%args);
+
+    $self->accept_targets_as_text(
+        qw( sidebar blockquote programlisting figure table PASM PIR PIR_FRAGMENT PASM_FRAGMENT PIR_FRAGMENT_INVALID)
+    );
+
+    $self->{scratch} ||= '';
+    $self->{stack}     = [];
+
+    return $self;
 }
 
 sub end_Document
 {
-	my $self = shift;
-	$self->emit();
+    my $self = shift;
+    $self->emit();
 }
 
 sub emit
 {
-	my $self = shift;
-	return unless defined $self->{scratch};
-	print { $self->{output_fh} } delete $self->{scratch};
+    my $self = shift;
+    return unless defined $self->{scratch};
+    print { $self->{output_fh} } delete $self->{scratch};
 }
 
 sub handle_text
 {
-	my ($self, $text) = @_;
-	$self->{scratch} .= $self->encode_text( $text );
+    my ( $self, $text ) = @_;
+    $self->{scratch} .= $self->encode_text($text);
 }
 
 sub encode_text
 {
-	my ($self, $text) = @_;
-	return $text if $self->{flags}{in_verbatim};
+    my ( $self, $text ) = @_;
 
-	# escape LaTeX-specific characters
-	$text =~ s/([#\$&%_{}\\])/\\$1/g;
+    return $text if $self->{flags}{in_verbatim};
+    return $text if $self->{flags}{in_xref};
+    return $text if $self->{flags}{in_figure};
 
-	# use the right beginning quotes
-	$text =~ s/(^|\s)"/$1``/g;
+    # Escape LaTeX-specific characters
+    $text =~ s/\\/\\backslash/g;       # backslashes are special
+    $text =~ s/(\^)/\\char94\{\}/g;    # carets are special
+    $text =~ s/([#\$&%_{}])/\\$1/g;
 
-	# and the right ending quotes
-	$text =~ s/"(\W|$)/''$1/g;
+    $text =~ s/(\\backslash)/\$$1\$/g;    # add unescaped dollars
 
-	# fix the ellipses
-	$text =~ s/\.{3}\s*/\\ldots /g;
+    # use the right beginning quotes
+    $text =~ s/(^|\s)"/$1``/g;
 
-	# fix the ligatures
-	$text =~ s/f([fil])/f\\mbox{}$1/g;
+    # and the right ending quotes
+    $text =~ s/"(\W|$)/''$1/g;
 
-	# fix emdashes
-	$text =~ s/\s--\s/---/g;
+    # fix the ellipses
+    $text =~ s/\.{3}\s*/\\ldots /g;
 
-	# fix tildes
-	$text =~ s/~/\$\\sim\$/g;
+    # fix the ligatures
+    $text =~ s/f([fil])/f\\mbox{}$1/g;
 
-	return $text;
+    # fix emdashes
+    $text =~ s/\s--\s/---/g;
+
+    # fix tildes
+    $text =~ s/~/\$\\sim\$/g;
+
+    # suggest hyphenation points for module names
+    $text =~ s/::/::\\-/g;
+
+    return $text;
 }
 
 sub start_head0
 {
-	my $self = shift;
-	$self->{scratch} .= '\\chapter{';
+    my $self = shift;
+    $self->{scratch} .= '\\chapter{';
 }
 
 sub end_head0
 {
-	my $self = shift;
-	$self->{scratch} .= "}\n\n";
-	$self->emit();
+    my $self = shift;
+    $self->{scratch} .= "}\n\n";
+    $self->emit();
 }
 
 sub end_Para
 {
-	my $self = shift;
-	$self->{scratch} .= "\n\n";
-	$self->emit();
+    my $self = shift;
+    $self->{scratch} .= "\n\n";
+    $self->emit();
 }
 
 BEGIN
 {
-	for my $level ( 1 .. 3 )
-	{
-		my $prefix    = '\\' . ( 'sub' x ( $level - 1 ) ) . 'section*{';
-		my $start_sub = sub
-		{
-			my $self = shift;
-			$self->{scratch} .= $prefix;
-		};
+    for my $level ( 1 .. 5 )
+    {
+        my $prefix = '\\' . ( 'sub' x ( $level - 1 ) ) . 'section*{';
+        my $start_sub = sub {
+            my $self = shift;
+            $self->{scratch} .= $prefix;
+        };
 
-		my $end_sub  = sub
-		{
-			my $self = shift;
-			$self->{scratch} .= "}\n\n";
-			$self->emit();
-		};
+        my $end_sub = sub {
+            my $self = shift;
+            $self->{scratch} .= "}\n\n";
+            $self->emit();
+        };
 
-		no strict 'refs';
-		*{ 'start_head' . $level } = $start_sub;
-		*{ 'end_head'   . $level } = $end_sub;
-	}
+        no strict 'refs';
+        *{ 'start_head' . $level } = $start_sub;
+        *{ 'end_head'   . $level } = $end_sub;
+    }
 }
 
 sub start_E
 {
-	my $self = shift;
-	push @{ $self->{stack} }, delete $self->{scratch};
-	$self->{scratch} = '';
+    my $self = shift;
+    push @{ $self->{stack} }, delete $self->{scratch};
+    $self->{scratch} = '';
 }
 
-my %characters =
-(
-	acute => sub { qq|\\'| . shift },
-	grave => sub { qq|\\`| . shift },
-	uml   => sub { qq|\\"| . shift },
-	opy   => sub { '\copyright' },
-	dash  => sub { '---' },
-	lusmn => sub { '\pm' },
+my %characters = (
+    acute   => sub { qq|\\'| . shift },
+    grave   => sub { qq|\\`| . shift },
+    uml     => sub { qq|\\"| . shift },
+    cedilla => sub { '\c' },              # ccedilla
+    opy     => sub { '\copyright' },      # copy
+    dash    => sub { '---' },             # mdash
+    lusmn   => sub { '\pm' },             # plusmn
+    mp      => sub { '\&' },              # amp
 );
 
 sub end_E
 {
-	my $self    = shift;
+    my $self = shift;
+    my $clean_entity;
 
-	# XXX - error checking here
-	(my $entity = delete $self->{scratch}) =~ s/(\w)(\w+)/
-		exists $characters{$2} ?
-			$characters{$2}->( $1 ) : die "Unrecognized character '$2'\n" /e;
+    # XXX - error checking here
+    my $entity = delete $self->{scratch};
+    $entity =~ /(\w)(\w+)/;
+    if ( exists $characters{$2} )
+    {
+        $clean_entity = $characters{$2}->($1);
+    }
+    elsif ( $clean_entity = Pod::Escapes::e2char($entity) )
+    {
+    }
+    else
+    {
+        die "Unrecognized character '$entity'\n";
+    }
 
-	$self->{scratch} = pop @{ $self->{stack } };
-	$self->{scratch} .= $entity;
+    $self->{scratch} = pop @{ $self->{stack} };
+    $self->{scratch} .= $clean_entity;
 }
 
-sub _treat_Es {}
+sub _treat_Es { }
+
+sub start_Z
+{
+    my $self = shift;
+    push @{ $self->{stack} }, delete $self->{scratch};
+    $self->{scratch} = '';
+    $self->{flags}{in_xref}++;
+}
+
+sub end_Z
+{
+    my $self       = shift;
+    my $clean_xref = delete $self->{scratch};
+
+    # sanitize crossreference names
+    $clean_xref =~ s/[^\w:]/-/g;
+
+    $self->{scratch}  = pop( @{ $self->{stack} } )
+                      . '\\label{' . $clean_xref . '}';
+    $self->{flags}{in_xref}--;
+}
+
+sub start_A
+{
+    my $self = shift;
+    push @{ $self->{stack} }, delete $self->{scratch};
+
+    $self->{scratch} = '';
+    $self->{flags}{in_xref}++;
+}
+
+sub end_A
+{
+    my $self       = shift;
+    my $clean_xref = delete $self->{scratch};
+
+    # sanitize crossreference names
+    $clean_xref      =~ s/[^\w:]/-/g;
+    $self->{scratch} = pop @{ $self->{stack} };
+
+    # Figures have a different xref format
+    if ( $clean_xref =~ /^fig:/ )
+    {
+        $self->{scratch} .= 'Figure \\ref{' . $clean_xref . '} ';
+    }
+    # Tables have a different xref format
+    elsif ( $clean_xref =~ /^table:/ )
+    {
+        $self->{scratch} .= 'Table \\ref{' . $clean_xref . '} ';
+    }
+    else
+    {
+        $self->{scratch} .= '\\emph{\\titleref{' . $clean_xref . '}}';
+    }
+
+    $self->{scratch} .= 'on page '
+                     .  '\\pageref{' . $clean_xref . '}';
+
+    $self->{flags}{in_xref}--;
+}
+
+sub start_F
+{
+    my $self = shift;
+
+    if ( $self->{flags}{in_figure} )
+    {
+        push @{ $self->{stack} }, delete $self->{scratch};
+        $self->{scratch} = '';
+    }
+    else
+    {
+        $self->{scratch} .= '\\emph{';
+    }
+}
+
+sub end_F
+{
+    my $self = shift;
+
+    if ( $self->{flags}{in_figure} )
+    {
+        my $raw_filename = delete $self->{scratch};
+        $self->{scratch} = pop @{ $self->{stack} };
+
+        # extract bare image filename
+        $raw_filename =~ /(\w+)\.\w+$/;
+        $self->{scratch} .= "\n\\includegraphics{" . $1 . '}';
+    }
+    else
+    {
+        $self->{scratch} .= '}';
+    }
+}
 
 sub start_for
 {
-	my ($self, $flags) = @_;
+    my ( $self, $flags ) = @_;
 }
 
 sub end_for
 {
-	my $self = shift;
+    my $self = shift;
 }
 
 sub start_Verbatim
 {
-	my $self = shift;
-	$self->{scratch} .= "\\begin{verbatim}\n";
-	$self->{flags}{in_verbatim}++;
+    my $self = shift;
+
+    #	$self->{scratch} .= "\\addtolength{\\parskip}{-5pt}\n";
+    $self->{scratch} .= "\\vspace{-6pt}\n"
+                     .  "\\scriptsize\n"
+                     .  "\\begin{verbatim}\n";
+    $self->{flags}{in_verbatim}++;
 }
 
 sub end_Verbatim
 {
-	my $self = shift;
-	$self->{scratch} .= "\\end{verbatim}\n";
-	$self->{flags}{in_verbatim}--;
-	$self->emit();
+    my $self = shift;
+    $self->{scratch} .= "\\end{verbatim}\n"
+                     .  "\\vspace{-6pt}\n";
+
+    #	$self->{scratch} .= "\\addtolength{\\parskip}{5pt}\n";
+    $self->{scratch} .= "\\normalsize\n";
+    $self->{flags}{in_verbatim}--;
+    $self->emit();
+}
+
+sub start_figure
+{
+    my ( $self, $flags ) = @_;
+
+    $self->{scratch} .= "\\begin{figure}[!h]\n";
+
+    if ( $flags->{title} )
+    {
+        my $title = $self->encode_text( $flags->{title} );
+        $title    =~ s/^graphic\s*//;
+        $self->{scratch} .= "\\caption{" . $title . "}\n";
+    }
+
+    $self->{scratch} .= "\\begin{center}\n";
+    $self->{flags}{in_figure}++;
+}
+
+sub end_figure
+{
+    my $self = shift;
+    $self->{scratch} .= "\\end{center}\n";
+    $self->{scratch} .= "\\end{figure}\n";
+    $self->{flags}{in_figure}--;
+    $self->emit();
+}
+
+sub start_table
+{
+    my ( $self, $flags) = @_;
+
+    # Open the table
+    $self->{scratch} .= "\\begin{table}[!h]\n";
+
+    if ( $flags->{title} )
+    {
+        my $title = $self->encode_text( $flags->{title} );
+        $title    =~ s/^graphic\s*//;
+        $self->{scratch} .= "\\caption{" . $title . "}\n";
+    }
+    $self->{scratch} .= "\\begin{center}\n";
+
+    $self->{flags}{in_table}++;
+    delete $self->{table_rows};
+}
+
+sub end_table
+{
+    my $self = shift;
+
+    # Format the table body
+    my $column_count  = @{ $self->{table_rows}[0] };
+    my $format_spec   = '|' . ( 'l|' x $column_count );
+
+    # first row is gray
+    $self->{scratch} .= "\\begin{tabular}{$format_spec}\n"
+                     .  "\\hline\n"
+                     .  "\\rowcolor[gray]{.9}\n";
+
+    # Format each row
+    my $row;
+    for $row ( @{ $self->{table_rows} } )
+    {
+        $self->{scratch} .= join( ' & ', @$row )
+                         . "\\\\ \\hline\n";
+    }
+
+    # Close the table
+    $self->{scratch} .= "\\end{tabular}\n"
+                     .  "\\end{center}\n"
+                     .  "\\end{table}\n";
+
+    $self->{flags}{in_table}--;
+    delete $self->{table_rows};
+
+    $self->emit();
+}
+
+sub start_headrow
+{
+    my $self = shift;
+    $self->{in_headrow}++;
+}
+
+sub start_bodyrows
+{
+    my $self = shift;
+    $self->{in_headrow}--;
+}
+
+sub start_row
+{
+    my $self = shift;
+    delete $self->{table_current_row};
+}
+
+sub end_row
+{
+    my $self = shift;
+    push @{ $self->{table_rows} }, $self->{table_current_row};
+    delete $self->{table_current_row};
+}
+
+sub start_cell
+{
+    my $self = shift;
+    push @{ $self->{stack} }, delete $self->{scratch};
+    $self->{scratch} = '';
+}
+
+sub end_cell
+{
+    my $self          = shift;
+    my $cell_contents = delete $self->{scratch};
+
+    if ( $self->{in_headrow} )
+    {
+        $cell_contents = '\\textbf{\\textsf{' . $cell_contents . '}}';
+    }
+
+    push @{ $self->{table_current_row} }, $cell_contents;
+    $self->{scratch} = pop @{ $self->{stack} };
 }
 
 BEGIN
 {
-	for my $listtype (
-		[qw( bullet itemize     )],
-		[qw( number enumerate   )],
-		[qw( text   description )],
-		[qw( block  description )],
-	)
-	{
+    for my $listtype (
+        [qw( bullet itemize     )], [qw( number enumerate   )],
+        [qw( text   description )], [qw( block  description )],
+        )
+    {
 
-		my $start_sub = sub 
-		{
-			my $self = shift;
-			$self->{scratch} .= "\\flushleft\n\\begin{$listtype->[1]}\n\n";
-		};
+        my $start_sub = sub {
+            my $self = shift;
+            $self->{scratch} .= "\\vspace{-5pt}\n"
+                             .  "\n\\begin{$listtype->[1]}\n\n"
+                             .  "\\setlength{\\topsep}{0pt}\n"
+                             .  "\\setlength{\\itemsep}{0pt}\n";
 
-		my $end_sub = sub
-		{
-			my $self = shift;
-			$self->{scratch} .= "\\end{$listtype->[1]}\n\n";
-			$self->emit();
-		};
+            #			$self->{scratch} .= "\\setlength{\\parskip}{0pt}\n";
+            #			$self->{scratch} .= "\\setlength{\\parsep}{0pt}\n";
+        };
 
-		no strict 'refs';
-		*{ 'start_over_' . $listtype->[0] } = $start_sub;
-		*{ 'end_over_'   . $listtype->[0] } = $end_sub;
-	}
+        my $end_sub = sub {
+            my $self = shift;
+            $self->{scratch} .= "\\end{$listtype->[1]}\n\n"
+                             .  "\\vspace{-5pt}\n";
+            $self->emit();
+        };
+
+        no strict 'refs';
+        *{ 'start_over_' . $listtype->[0] } = $start_sub;
+        *{ 'end_over_'   . $listtype->[0] } = $end_sub;
+    }
 }
 
 sub start_item_bullet
 {
-	my $self = shift;
-	$self->{scratch} .= '\item ';
+    my $self = shift;
+    $self->{scratch} .= '\item ';
 }
 
 sub start_item_number
 {
-	my ($self, $flags) = @_;
-	use Data::Dumper;
-	warn Dumper $flags;
-	$self->{scratch}  .= "\\item[$flags->{number}] ";
+    my ( $self, $flags ) = @_;
+
+    #	$self->{scratch}  .= "\\item[$flags->{number}] ";
+    $self->{scratch} .= "\\item ";    # LaTeX will auto-number
 }
 
 sub start_item_text
 {
-	my $self = shift;
-	$self->{scratch} .= '\item[] ';
+    my $self = shift;
+    $self->{scratch} .= '\item[] ';
+}
+
+sub start_sidebar
+{
+    my ( $self, $flags ) = @_;
+    $self->{scratch} .= "\\begin{figure}[!h]\n"
+                     .  "\\begin{center}\n"
+                     .  "\\framebox{\n"
+                     .  "\\begin{minipage}{3.5in}\n"
+                     .  "\\vspace{3pt}\n\n";
+
+    if ( $flags->{title} )
+    {
+        my $title = $self->encode_text( $flags->{title} );
+        $self->{scratch} .= "\\begin{center}\n"
+                         .  "\\large{\\bfseries{" . $title . "}}\n"
+                         .  "\\end{center}\n\n";
+    }
+}
+
+sub end_sidebar
+{
+    my $self = shift;
+    $self->{scratch} .= "\\vspace{3pt}\n"
+                     .  "\\end{minipage}\n"
+                     # end framebox
+                     .  "}\n"
+                     .  "\\end{center}\n"
+                     .  "\\end{figure}\n";
 }
 
 BEGIN
 {
-	for my $end (qw( bullet number text))
-	{
-		my $end_sub = sub
-		{
-			my $self = shift;
-			$self->{scratch} .= "\n\n";
-			$self->emit();
-		};
+    for my $end (qw( bullet number text))
+    {
+        my $end_sub = sub {
+            my $self = shift;
+            $self->{scratch} .= "\n\n";
+            $self->emit();
+        };
 
-		no strict 'refs';
-		*{ 'end_item_' . $end } = $end_sub;
-	}
-}
+        no strict 'refs';
+        *{ 'end_item_' . $end } = $end_sub;
+    }
 
-my %formats =
-(
-	B => [ 'textbf',   '' ],
-	C => [ 'texttt',   '' ],
-	F => [ 'emph',     '' ],
-	I => [ 'emph',     '' ],
-	N => [ 'footnote', '' ],
-	X => [ 'index',    '|textit' ],
-);
+    my %formats = (
+        B => [ 'textbf',   '' ],
+        C => [ 'texttt',   '' ],
+        I => [ 'emph',     '' ],
+        U => [ 'emph',     '' ],
+        R => [ 'emph',     '' ],
+        N => [ 'footnote', '' ],
 
-while (my ($code, $fixes) = each %formats)
-{
-	my $start_sub = sub
-	{
-		my $self = shift;
-		$self->{scratch} .= '\\' . $fixes->[0] . '{';
-	};
+        X => [ 'index', '' ],
+    );
 
-	my $end_sub = sub
-	{
-		my $self = shift;
-		$self->{scratch} .= $fixes->[1] . '}';
-	};
+    while ( my ( $code, $fixes ) = each %formats )
+    {
+        my $start_sub = sub {
+            my $self = shift;
+            $self->{scratch} .= '\\' . $fixes->[0] . '{';
+        };
 
-	no strict 'refs';
-	*{ 'start_' . $code } = $start_sub;
-	*{ 'end_'   . $code } = $end_sub;
+        my $end_sub = sub {
+            my $self = shift;
+            $self->{scratch} .= $fixes->[1] . '}';
+        };
+
+        no strict 'refs';
+        *{ 'start_' . $code } = $start_sub;
+        *{ 'end_'   . $code } = $end_sub;
+    }
+
 }
 
 1;
@@ -341,7 +622,7 @@ work under free software guidelines.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright (c) 2006 chromatic, some rights reserved.
+Copyright (c) 2006, 2009 chromatic, some rights reserved.
 
 This program is free software; you can redistribute it and/or modify it under
 the same terms as Perl 5.8 itself.

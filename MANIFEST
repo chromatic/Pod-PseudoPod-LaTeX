@@ -7,11 +7,7 @@ lib/Pod/PseudoPod/LaTeX.pm
 scripts/ppod2latex
 t/00-load.t
 t/boilerplate.t
-t/developer/pod-coverage.t
-t/developer/pod.t
 t/test_file.pod
 t/escapes.t
 t/sections.t
 t/translations.t
-Makefile.PL
-SIGNATURE    Added here by Module::Build

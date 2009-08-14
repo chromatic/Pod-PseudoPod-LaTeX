@@ -36,7 +36,8 @@ Words like flame, filk, and ineffable have interesting ligatures -- and you
 need a bit of work to make the typography work out nicely.
 
 Diacritics are more difficult E<aacute> la the naE<iuml>ve attachE<egrave> and
-the E<copy> caper, E<plusmn> some constant.
+the E<copy> caper, E<plusmn> some constant.  FranE<ccedilla>aise has some fun
+ones.
 
 X<Special formatting> is B<very> important, especially in C<code-like text>,
 for special F<emphasis>, and I<semantic-only emphasis>N<but beware of

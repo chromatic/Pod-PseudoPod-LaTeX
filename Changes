@@ -1,4 +1,9 @@
 Revision history for Pod-PseudoPod-LaTeX
 
-0.10   Thu Jun  1 00:02:17 UTC 2006 ($Rev$, $Author$)
+1.000  Fri Aug 14 02:07:38 UTC 2009
+    - added modifications from the Parrot PIR book
+    - removed unnecessary developer tests and Makefile.PL from tarball
+    - improved dependencies
+
+0.10   Thu Jun  1 00:02:17 UTC 2006
         First version, released on an unsuspecting world.

@@ -23,14 +23,14 @@ like( $text, qr/"This text should not be escaped -- it is normal \$text."/,
 
 like( $text, qr/-- it is also "normal".+\$text./s, '... indented too' );
 
-like( $text, qr/octothorpe, \\#/, '# should get quoted' );
-like( $text, qr/escaping: \\\\/,  '\ should get quoted' );
-like( $text, qr/\\\$/,            '$ should get quoted' );
-like( $text, qr/\\&/,             '& should get quoted' );
-like( $text, qr/\\%/,             '% should get quoted' );
-like( $text, qr/ \\_\./,          '_ should get quoted' );
-like( $text, qr/\\{\\},/,         '{ and } should get quoted' );
-like( $text, qr/ \$\\sim\$/,      '~ should get quoted' );
+like( $text, qr/octothorpe, \\#/,            '# should get quoted' );
+like( $text, qr/escaping: \$\\backslash\$/,  '\ should get quoted' );
+like( $text, qr/\\\$/,                       '$ should get quoted' );
+like( $text, qr/\\&/,                        '& should get quoted' );
+like( $text, qr/\\%/,                        '% should get quoted' );
+like( $text, qr/ \\_\./,                     '_ should get quoted' );
+like( $text, qr/\\{\\},/,                    '{ and } should get quoted' );
+like( $text, qr/ \$\\sim\$/,                 '~ should get quoted' );
 
 like( $text, qr/``The interesting/,
 	'starting double quotes should turn into double opening single quotes' );
