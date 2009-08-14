@@ -7,15 +7,19 @@ abstract: convert Pod::PseudoPod documents into LaTeX
 license: perl
 resources:
   license: http://dev.perl.org/licenses/
-requires:
-  Pod::PseudoPod: 0
 build_requires:
-  Test::More: 0
+  IO::String: 0
+  Test::More: 0.60
+requires:
+  Pod::PseudoPod: 0.15
+  perl: v5.6.2
+configure_requires:
+  Module::Build: 0.34
 provides:
   Pod::PseudoPod::LaTeX:
     file: lib/Pod/PseudoPod/LaTeX.pm
     version: 0.10
-generated_by: Module::Build version 0.2801
+generated_by: Module::Build version 0.34
 meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
