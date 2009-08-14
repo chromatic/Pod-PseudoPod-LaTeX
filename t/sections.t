@@ -19,49 +19,49 @@ $fh->setpos(0);
 my $text  = join( '', <$fh> );
 
 like( $text, qr/\\chapter{Some Document}/,
-	'0 heads should become chapter titles' );
+    '0 heads should become chapter titles' );
 
 like( $text, qr/\\section\*{A Heading}/,
-	'A heads should become section titles' );
+    'A heads should become section titles' );
 
 like( $text, qr/\\subsection\*{B heading}/,
-	'B heads should become subsection titles' );
+    'B heads should become subsection titles' );
 
 like( $text, qr/\\subsubsection\*{c heading}/,
-	'C heads should become subsubsection titles' );
+    'C heads should become subsubsection titles' );
 
 like( $text, qr/\\begin{verbatim}.+"This text.+--.+\$text."\\end{verbatim}/s,
-	'programlistings should become unescaped, verbatim text' );
+    'programlistings should become unescaped, verbatim text' );
 
 like( $text, qr/Blockquoted text.+``escaped''\./,
-	'blockquoted text gets escaped' );
+    'blockquoted text gets escaped' );
 
-like( $text, qr/\\flushleft\n\\begin{description}\n\n\\item\[\] Verbatim\n\n/,
-	'text-item lists need description formatting to start' );
+like( $text, qr/\\begin{description}.+\\item\[\] Verbatim\n\n/s,
+    'text-item lists need description formatting to start' );
 
 like( $text, qr/\\item\[\] items\n\n\\end{description}/,
-	'... and to end' );
+    '... and to end' );
 
-like( $text, qr/rule too:\n\n\\flushleft\n\\begin{itemize}\n\n\\item BANG\n\n/,
-	'bulleted lists need itemized formatting to start' );
+like( $text, qr/rule too:\n\n.+?\\begin{itemize}.+?\\item BANG\n\n/s,
+    'bulleted lists need itemized formatting to start' );
 
 like( $text, qr/\\item BANGERANG!\n\n\\end{itemize}/,
-	'... and to end' );
+    '... and to end' );
 
 like( $text,
-	qr/\\flushleft\n\\begin{description}\n\n\\item\[\] wakawaka\n\nWhat/,
-	'definition lists need description formatting to start' );
+    qr/\\begin{description}.+?\\item\[\] wakawaka.+?What/s,
+    'definition lists need description formatting to start' );
 
 like( $text, qr/\\item\[\] ook ook\n\nWhat.+says\.\n\n\\end{description}/,
-	'... and to end' );
+    '... and to end' );
 
 TODO:
 {
-	local $TODO = "Seems like an upstream bug here\n";
+    local $TODO = "Seems like an upstream bug here\n";
 
-	like( $text, qr/\\flushleft\n\begin{enumerate}\n\n\\item \[22\] First\n\n/,
-		'enumerated lists need their numbers intact' );
+    like( $text, qr/\\begin{enumerate}.+\\item \[22\] First/,
+        'enumerated lists need their numbers intact' );
 
-	like( $text, qr/\\item \[77\]\n\nFooled you!\n\n\\end{itemize}/,
-		'... and their itemized endings okay' );
+    like( $text, qr/\\item \[77\].+Fooled you!.+\\end{itemize}/,
+        '... and their itemized endings okay' );
 }
