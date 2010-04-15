@@ -6,7 +6,7 @@ use warnings;
 use IO::String;
 use File::Spec::Functions;
 
-use Test::More tests => 20;
+use Test::More tests => 21;
 
 use_ok( 'Pod::PseudoPod::LaTeX' ) or exit;
 
@@ -31,6 +31,7 @@ like( $text, qr/\\%/,                        '% should get quoted' );
 like( $text, qr/ \\_\./,                     '_ should get quoted' );
 like( $text, qr/\\{\\},/,                    '{ and } should get quoted' );
 like( $text, qr/ \$\\sim\$/,                 '~ should get quoted' );
+like( $text, qr/caret \\char94\{\}/,         '^  should get quoted' );
 
 like( $text, qr/``The interesting/,
 	'starting double quotes should turn into double opening single quotes' );

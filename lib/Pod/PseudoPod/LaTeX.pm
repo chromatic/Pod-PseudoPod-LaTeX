@@ -52,8 +52,8 @@ sub encode_text
 
     # Escape LaTeX-specific characters
     $text =~ s/\\/\\backslash/g;       # backslashes are special
-    $text =~ s/(\^)/\\char94\{\}/g;    # carets are special
     $text =~ s/([#\$&%_{}])/\\$1/g;
+    $text =~ s/(\^)/\\char94{}/g;         # carets are special
 
     $text =~ s/(\\backslash)/\$$1\$/g;    # add unescaped dollars
 

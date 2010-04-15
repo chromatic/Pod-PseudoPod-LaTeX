@@ -28,6 +28,8 @@ lots of other escapable characters, including $ & % and _.  The curly braces,
 "The interesting thing is that when you use double quotes," he said, "they turn
 into double single quotes going in the correct direction."
 
+The caret ^ is interesting too.
+
 =head3 c heading
 
 When you leave out words, add an ellipsis... and get out an escaped version.
