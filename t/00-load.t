@@ -1,5 +1,7 @@
 #!perl -T
 
+# set the minimum version number
+use Test::More 0.60;
 use Test::More tests => 1;
 
 BEGIN {

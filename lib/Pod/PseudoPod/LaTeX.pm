@@ -1,11 +1,14 @@
 package Pod::PseudoPod::LaTeX;
 
+use Pod::PseudoPod 0.16;
+
 use base 'Pod::PseudoPod';
+use 5.008006;
 
 use strict;
 use warnings;
 
-our $VERSION = '1.000';
+our $VERSION = '1.01';
 
 sub new
 {
@@ -622,7 +625,7 @@ work under free software guidelines.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright (c) 2006, 2009 chromatic, some rights reserved.
+Copyright (c) 2006, 2009, 2010 chromatic, some rights reserved.
 
 This program is free software; you can redistribute it and/or modify it under
 the same terms as Perl 5.8 itself.
