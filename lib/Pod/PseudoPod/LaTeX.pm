@@ -8,8 +8,6 @@ use 5.008006;
 use strict;
 use warnings;
 
-our $VERSION = '1.01';
-
 sub new
 {
     my ( $class, %args ) = @_;
@@ -550,10 +548,6 @@ __END__
 =head1 NAME
 
 Pod::PseudoPod::LaTeX - convert Pod::PseudoPod documents into LaTeX
-
-=head1 VERSION
-
-Version 0.10
 
 =head1 SYNOPSIS
 
