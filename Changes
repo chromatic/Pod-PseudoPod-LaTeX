@@ -1,5 +1,8 @@
 Revision history for Pod-PseudoPod-LaTeX
 
+{{$NEXT}}
+    - migrated build system to Dist::Zilla
+
 1.000  Fri Aug 14 02:07:38 UTC 2009
     - added modifications from the Parrot PIR book
     - removed unnecessary developer tests and Makefile.PL from tarball
