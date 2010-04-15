@@ -30,7 +30,7 @@ like( $text, qr/\\subsection\*{B heading}/,
 like( $text, qr/\\subsubsection\*{c heading}/,
     'C heads should become subsubsection titles' );
 
-like( $text, qr/\\begin{verbatim}.+"This text.+--.+\$text."\\end{verbatim}/s,
+like( $text, qr/\\begin{Verbatim}.+"This text.+--.+\$text."\n\\end{Verbatim}/s,
     'programlistings should become unescaped, verbatim text' );
 
 like( $text, qr/Blockquoted text.+``escaped''\./,

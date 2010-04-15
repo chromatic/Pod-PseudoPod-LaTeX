@@ -46,7 +46,7 @@ sub encode_text
 {
     my ( $self, $text ) = @_;
 
-    return $text if $self->{flags}{in_verbatim};
+    return $self->encode_verbatim_text($text) if $self->{flags}{in_verbatim};
     return $text if $self->{flags}{in_xref};
     return $text if $self->{flags}{in_figure};
 
@@ -77,6 +77,17 @@ sub encode_text
 
     # suggest hyphenation points for module names
     $text =~ s/::/::\\-/g;
+
+    return $text;
+}
+
+# in verbatim mode, some things still need escaping - otherwise markup
+# wouldn't work when the codes_in_verbatim option is enabled.
+sub encode_verbatim_text {
+    my ($self, $text) = @_;
+
+    $text =~ s/([{}])/\\$1/g;
+    $text =~ s/\\(?![{}])/\\textbackslash{}/g;
 
     return $text;
 }
@@ -278,14 +289,14 @@ sub start_Verbatim
     #	$self->{scratch} .= "\\addtolength{\\parskip}{-5pt}\n";
     $self->{scratch} .= "\\vspace{-6pt}\n"
                      .  "\\scriptsize\n"
-                     .  "\\begin{verbatim}\n";
+                     .  "\\begin{Verbatim}[commandchars=\\\\\\{\\}]\n";
     $self->{flags}{in_verbatim}++;
 }
 
 sub end_Verbatim
 {
     my $self = shift;
-    $self->{scratch} .= "\\end{verbatim}\n"
+    $self->{scratch} .= "\n\\end{Verbatim}\n"
                      .  "\\vspace{-6pt}\n";
 
     #	$self->{scratch} .= "\\addtolength{\\parskip}{5pt}\n";
@@ -566,6 +577,20 @@ Perhaps a little code snippet.
     ...
 
 There aren't really any user-servicable parts inside.
+
+=head1 LATEX PRELUDE
+
+The generated LaTeX code needs some packages to be loaded to work correctly.
+Currently it needs
+
+    \usepackage{fancyvrb}
+
+The standard font in LaTeX (Computer Modern) does not support bold and italic
+variants of its monospace font, an alternative is
+
+    \usepackage[T1]{fontenc}
+    \usepackage{textcomp}
+    \usepackage[scaled]{beramono}
 
 =head1 AUTHOR
 

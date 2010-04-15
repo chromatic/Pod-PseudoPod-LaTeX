@@ -3,6 +3,7 @@ Revision history for Pod-PseudoPod-LaTeX
 {{$NEXT}}
     - migrated build system to Dist::Zilla
     - corrected escaping of the caret (^) character; closes [CPAN #50794]
+    - implemented markup in verbatim environments
 
 1.000  Fri Aug 14 02:07:38 UTC 2009
     - added modifications from the Parrot PIR book
