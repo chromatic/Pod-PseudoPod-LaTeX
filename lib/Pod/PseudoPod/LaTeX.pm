@@ -14,11 +14,12 @@ sub new
     my $self             = $class->SUPER::new(%args);
 
     $self->accept_targets_as_text(
-        qw( sidebar blockquote programlisting figure table PASM PIR PIR_FRAGMENT PASM_FRAGMENT PIR_FRAGMENT_INVALID)
+        qw( sidebar blockquote programlisting screen figure table PASM PIR PIR_FRAGMENT PASM_FRAGMENT PIR_FRAGMENT_INVALID)
     );
 
     $self->{scratch} ||= '';
     $self->{stack}     = [];
+    $self->{labels}     = { screen => 'Program output'};
 
     return $self;
 }
@@ -54,6 +55,8 @@ sub encode_text
     $text =~ s/\\/\\backslash/g;       # backslashes are special
     $text =~ s/([#\$&%_{}])/\\$1/g;
     $text =~ s/(\^)/\\char94{}/g;         # carets are special
+    $text =~ s/</\\textless{}/g;
+    $text =~ s/>/\\textgreater{}/g;
 
     $text =~ s/(\\backslash)/\$$1\$/g;    # add unescaped dollars
 
@@ -286,10 +289,17 @@ sub start_Verbatim
 {
     my $self = shift;
 
-    #	$self->{scratch} .= "\\addtolength{\\parskip}{-5pt}\n";
+    my $verb_options = "commandchars=\\\\\\{\\}";
+    eval {
+        if ($self->{curr_open}[-1][-1]{target} eq 'screen') {
+            $verb_options .= ',frame=single,label='
+                             . $self->{labels}{screen};
+        }
+    };
+
     $self->{scratch} .= "\\vspace{-6pt}\n"
                      .  "\\scriptsize\n"
-                     .  "\\begin{Verbatim}[commandchars=\\\\\\{\\}]\n";
+                     .  "\\begin{Verbatim}[$verb_options]\n";
     $self->{flags}{in_verbatim}++;
 }
 
@@ -305,6 +315,18 @@ sub end_Verbatim
     $self->emit();
 }
 
+
+sub end_screen
+{
+    my $self = shift;
+    $self->{scratch} .= "\n\\end{Verbatim}\n"
+                     .  "\\vspace{-6pt}\n";
+
+    #	$self->{scratch} .= "\\addtolength{\\parskip}{5pt}\n";
+    $self->{scratch} .= "\\normalsize\n";
+    $self->{flags}{in_verbatim}--;
+    $self->emit();
+}
 sub start_figure
 {
     my ( $self, $flags ) = @_;

@@ -6,7 +6,7 @@ use warnings;
 use IO::String;
 use File::Spec::Functions;
 
-use Test::More tests => 15;
+use Test::More tests => 16;
 
 use_ok( 'Pod::PseudoPod::LaTeX' ) or exit;
 
@@ -32,6 +32,9 @@ like( $text, qr/\\subsubsection\*{c heading}/,
 
 like( $text, qr/\\begin{Verbatim}.+"This text.+--.+\$text."\n\\end{Verbatim}/s,
     'programlistings should become unescaped, verbatim text' );
+
+like( $text, qr/\\begin{Verbatim}.*label=.+This should also be \$unm0d\+ified\n\\end{Verbatim}/s,
+    'screens should become unescaped, verbatim text' );
 
 like( $text, qr/Blockquoted text.+``escaped''\./,
     'blockquoted text gets escaped' );
