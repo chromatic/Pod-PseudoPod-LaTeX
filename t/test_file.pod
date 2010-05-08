@@ -13,6 +13,12 @@ Here is some ignorable text.
   This indented text should come through unmodified too -- it is also "normal"
   $text.
 
+=begin screen
+
+  This should also be $unm0d+ified
+
+=end screen
+
 =begin blockquote
 
 Blockquoted text may or may not need "escaped".  I haven't decided.
