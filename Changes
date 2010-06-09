@@ -2,6 +2,10 @@ Revision history for Pod-PseudoPod-LaTeX
 
 {{$NEXT}}
 
+1.101600  Wed Jun 9 13:48:24 2010
+    - made bin/ppod2latex installable (Jerome Quelin, RT #58269)
+    - used Git plugins for dzil
+
 1.101530  Wed Jun 2 11:39:29 2010
     - pulled screen section changes from Moritz Lenz
 
