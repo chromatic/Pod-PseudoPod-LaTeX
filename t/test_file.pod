@@ -47,6 +47,12 @@ Diacritics are more difficult E<aacute> la the naE<iuml>ve attachE<egrave> and
 the E<copy> caper, E<plusmn> some constant.  FranE<ccedilla>aise has some fun
 ones.
 
+=for sidebar
+
+Hello, this is a sidebar
+
+=end
+
 X<Special formatting> is B<very> important, especially in C<code-like text>,
 for special F<emphasis>, and I<semantic-only emphasis>N<but beware of
 footnotes!>.
