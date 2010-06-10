@@ -1,6 +1,7 @@
 Revision history for Pod-PseudoPod-LaTeX
 
 {{$NEXT}}
+    - added support for custom environments
 
 1.101060  Fri Apr 16 08:46:25 2010
     - added repository information to distribution, no functional changes
