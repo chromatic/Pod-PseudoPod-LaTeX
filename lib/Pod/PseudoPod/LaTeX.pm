@@ -14,12 +14,13 @@ sub new
     my $self             = $class->SUPER::new(%args);
 
     $self->accept_targets_as_text(
-        qw( sidebar blockquote programlisting screen figure table PASM PIR PIR_FRAGMENT PASM_FRAGMENT PIR_FRAGMENT_INVALID)
+        qw( sidebar blockquote programlisting screen figure table
+            PASM PIR PIR_FRAGMENT PASM_FRAGMENT PIR_FRAGMENT_INVALID )
     );
 
     $self->{scratch} ||= '';
     $self->{stack}     = [];
-    $self->{labels}     = { screen => 'Program output'};
+    $self->{labels}    = { screen => 'Program output' };
 
     return $self;
 }
@@ -61,7 +62,7 @@ sub encode_text
     return $text if $self->{flags}{in_figure};
 
     # Escape LaTeX-specific characters
-    $text =~ s/\\/\\backslash/g;       # backslashes are special
+    $text =~ s/\\/\\backslash/g;          # backslashes are special
     $text =~ s/([#\$&%_{}])/\\$1/g;
     $text =~ s/(\^)/\\char94{}/g;         # carets are special
     $text =~ s/</\\textless{}/g;
@@ -172,6 +173,7 @@ sub end_E
     # XXX - error checking here
     my $entity = delete $self->{scratch};
     $entity =~ /(\w)(\w+)/;
+
     if ( exists $characters{$2} )
     {
         $clean_entity = $characters{$2}->($1);
@@ -184,7 +186,7 @@ sub end_E
         die "Unrecognized character '$entity'\n";
     }
 
-    $self->{scratch} = pop @{ $self->{stack} };
+    $self->{scratch}  = pop @{ $self->{stack} };
     $self->{scratch} .= $clean_entity;
 }
 
@@ -318,12 +320,11 @@ sub end_Verbatim
     $self->{scratch} .= "\n\\end{Verbatim}\n"
                      .  "\\vspace{-6pt}\n";
 
-    #	$self->{scratch} .= "\\addtolength{\\parskip}{5pt}\n";
+    #    $self->{scratch} .= "\\addtolength{\\parskip}{5pt}\n";
     $self->{scratch} .= "\\normalsize\n";
     $self->{flags}{in_verbatim}--;
     $self->emit();
 }
-
 
 sub end_screen
 {
@@ -331,11 +332,12 @@ sub end_screen
     $self->{scratch} .= "\n\\end{Verbatim}\n"
                      .  "\\vspace{-6pt}\n";
 
-    #	$self->{scratch} .= "\\addtolength{\\parskip}{5pt}\n";
+    #    $self->{scratch} .= "\\addtolength{\\parskip}{5pt}\n";
     $self->{scratch} .= "\\normalsize\n";
     $self->{flags}{in_verbatim}--;
     $self->emit();
 }
+
 sub start_figure
 {
     my ( $self, $flags ) = @_;
@@ -474,8 +476,8 @@ BEGIN
                              .  "\\setlength{\\topsep}{0pt}\n"
                              .  "\\setlength{\\itemsep}{0pt}\n";
 
-            #			$self->{scratch} .= "\\setlength{\\parskip}{0pt}\n";
-            #			$self->{scratch} .= "\\setlength{\\parsep}{0pt}\n";
+            #            $self->{scratch} .= "\\setlength{\\parskip}{0pt}\n";
+            #            $self->{scratch} .= "\\setlength{\\parsep}{0pt}\n";
         };
 
         my $end_sub = sub {
@@ -501,7 +503,7 @@ sub start_item_number
 {
     my ( $self, $flags ) = @_;
 
-    #	$self->{scratch}  .= "\\item[$flags->{number}] ";
+    #    $self->{scratch}  .= "\\item[$flags->{number}] ";
     $self->{scratch} .= "\\item ";    # LaTeX will auto-number
 }
 
@@ -519,9 +521,9 @@ sub start_sidebar
 
     if ( $self->{emit_environment}->{sidebar} )
     {
-	$self->{scratch} .= "\\begin{" . $self->{emit_environment}->{sidebar} . "}";
-	$self->{scratch} .= "[$title]" if $title;
-	$self->{scratch} .= "\n";
+    $self->{scratch} .= "\\begin{" . $self->{emit_environment}->{sidebar} . "}";
+    $self->{scratch} .= "[$title]" if $title;
+    $self->{scratch} .= "\n";
     }
     else
     {
@@ -545,7 +547,8 @@ sub end_sidebar
     my $self = shift;
     if ( $self->{emit_environment}->{sidebar} )
     {
-        $self->{scratch} .= "\\end{" . $self->{emit_environment}->{sidebar} . "}\n\n";
+        $self->{scratch} .= "\\end{"
+                         .  $self->{emit_environment}->{sidebar} . "}\n\n";
     }
     else
     {
@@ -621,8 +624,8 @@ Perhaps a little code snippet.
 
     my $parser = Pod::PseudoPod::LaTeX->new();
         $parser->emit_environments( sidebar => 'sidebar' );
-	$parser->output_fh( $some_fh );
-	$parser->parse_file( 'some_document.pod' );
+    $parser->output_fh( $some_fh );
+    $parser->parse_file( 'some_document.pod' );
 
     ...
 
