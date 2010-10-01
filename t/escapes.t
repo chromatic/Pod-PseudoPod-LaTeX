@@ -6,7 +6,7 @@ use warnings;
 use IO::String;
 use File::Spec::Functions;
 
-use Test::More tests => 21;
+use Test::More tests => 26;
 
 use_ok( 'Pod::PseudoPod::LaTeX' ) or exit;
 
@@ -53,3 +53,18 @@ like( $text, qr/inef\\mbox{}fable/, 'ff ligature also needs marking too' );
 
 like( $text, qr/ligatures---and/,
 	'spacey double dash should become a real emdash' );
+
+like( $text, qr/\\index{negation "! operator}/,
+	'! must me quoted with " in an index entry' );
+
+like( $text, qr/\\index{array "@ sigil}/,
+	'@ must me quoted with " in an index entry' );
+
+like( $text, qr/\\index{the pipe "|}/,
+	'| must me quoted with " in an index entry' );
+
+like( $text, qr/\\index{strange quote a""a}/,
+	'non-escaped " must me quoted with another " in an index entry' );
+
+like( $text, qr/\\index{hierarchical terms!omiting trailing spaces}/,
+	'trailing spaces in hierarchical terms should be ignored' );

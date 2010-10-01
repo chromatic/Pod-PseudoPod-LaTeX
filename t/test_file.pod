@@ -57,6 +57,15 @@ X<Special formatting> is B<very> important, especially in C<code-like text>,
 for special F<emphasis>, and I<semantic-only emphasis>N<but beware of
 footnotes!>.
 
+Index entries are more fun, as more special characters must be escaped, with
+a quote sign. E.g. X<negation ! operator>, X<array @ sigil>, X<the pipe |>
+and X<strange quote a"a>.
+
+Hierarchical terms are also possible, separating single terms with a comma.
+Spaces around comma (e.g. in X< hierarchical terms , omiting trailing spaces>)
+should be ignored, as they influence sorting order.
+ 
+
 Lists are fun:
 
 =over 4

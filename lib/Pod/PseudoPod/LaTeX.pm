@@ -192,6 +192,28 @@ sub end_E
 
 sub _treat_Es { }
 
+sub start_X
+{
+    my $self = shift;
+    push @{ $self->{stack} }, delete $self->{scratch};
+    $self->{scratch} = '';
+}
+
+sub end_X
+{
+    my $self       = shift;
+    my $terms_text = delete $self->{scratch};
+	my @terms;
+	for my $t (split ',', $terms_text) {
+		$t =~ s/^\s+|\s+$//g;
+		$t =~ s/"/""/g;
+		$t =~ s/([!|@])/"$1/g;
+		push @terms, $t;
+	}
+    $self->{scratch}  = pop( @{ $self->{stack} } )
+                      . '\\index{' . join('!', @terms) . '}';
+}
+
 sub start_Z
 {
     my $self = shift;
@@ -582,8 +604,6 @@ BEGIN
         U => [ 'emph',     '' ],
         R => [ 'emph',     '' ],
         N => [ 'footnote', '' ],
-
-        X => [ 'index', '' ],
     );
 
     while ( my ( $code, $fixes ) = each %formats )
