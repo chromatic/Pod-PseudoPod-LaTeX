@@ -14,7 +14,7 @@ sub new
     my $self             = $class->SUPER::new(%args);
 
     $self->accept_targets_as_text(
-        qw( sidebar blockquote programlisting screen figure table
+        qw( sidebar blockquote programlisting screen figure table latex
             PASM PIR PIR_FRAGMENT PASM_FRAGMENT PIR_FRAGMENT_INVALID )
     );
 
@@ -58,6 +58,7 @@ sub encode_text
     my ( $self, $text ) = @_;
 
     return $self->encode_verbatim_text($text) if $self->{flags}{in_verbatim};
+    return $text if $self->{flags}{in_for_latex};
     return $text if $self->{flags}{in_xref};
     return $text if $self->{flags}{in_figure};
 
@@ -311,11 +312,20 @@ sub end_F
 sub start_for
 {
     my ( $self, $flags ) = @_;
+
+    if ($flags->{target} =~ /^latex$/i) { # support latex, LaTeX, et al
+        $self->{flags}{in_for_latex}++;
+    }
 }
 
 sub end_for
 {
-    my $self = shift;
+    my ( $self, $flags ) = @_;
+
+    if ($flags->{target} =~ /^latex$/i) { # support latex, LaTeX, et al
+        $self->{flags}{in_for_latex}--;
+        $self->emit;
+    }
 }
 
 sub start_Verbatim
@@ -538,6 +548,7 @@ sub start_item_text
 sub start_sidebar
 {
     my ( $self, $flags ) = @_;
+
     my $title;
     $title = $self->encode_text( $flags->{title} ) if $flags->{title};
 

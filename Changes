@@ -3,6 +3,7 @@ Revision history for Pod-PseudoPod-LaTeX
 {{$NEXT}}
     - added support for custom environments
     - improved screen handling (Dean Serenevy, Moritz Lenz)
+    - support =for latex (Alberto Simões)
 
 1.101600  Wed Jun 9 13:48:24 2010
     - made bin/ppod2latex installable (Jerome Quelin, RT #58269)
