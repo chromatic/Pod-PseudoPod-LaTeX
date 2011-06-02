@@ -63,7 +63,8 @@ and X<strange quote a"a>.
 
 =for latex
 
-Sometimes it would be good to send direct commands to \LaTeX
+  Sometimes it would be good to send direct commands to \LaTeX
+  Indentation should not be verbatim. Nothing should be touched.
 
 =end
 

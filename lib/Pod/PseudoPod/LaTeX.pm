@@ -314,6 +314,7 @@ sub start_for
     my ( $self, $flags ) = @_;
 
     if ($flags->{target} =~ /^latex$/i) { # support latex, LaTeX, et al
+        $self->{scratch} .= "\n\n";
         $self->{flags}{in_for_latex}++;
     }
 }
@@ -323,6 +324,7 @@ sub end_for
     my ( $self, $flags ) = @_;
 
     if ($flags->{target} =~ /^latex$/i) { # support latex, LaTeX, et al
+        $self->{scratch} .= "\n\n";
         $self->{flags}{in_for_latex}--;
         $self->emit;
     }
@@ -331,6 +333,8 @@ sub end_for
 sub start_Verbatim
 {
     my $self = shift;
+
+    return if $self->{flags}{in_for_latex};
 
     my $verb_options = "commandchars=\\\\\\{\\}";
     eval {
@@ -349,6 +353,9 @@ sub start_Verbatim
 sub end_Verbatim
 {
     my $self = shift;
+
+    return if $self->{flags}{in_for_latex};
+
     $self->{scratch} .= "\n\\end{Verbatim}\n"
                      .  "\\vspace{-6pt}\n";
 
