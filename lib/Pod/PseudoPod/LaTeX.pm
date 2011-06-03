@@ -621,6 +621,7 @@ BEGIN
         I => [ 'emph',     '' ],
         U => [ 'emph',     '' ],
         R => [ 'emph',     '' ],
+        L => [ 'url',      '' ],
         N => [ 'footnote', '' ],
     );
 
@@ -673,6 +674,7 @@ The generated LaTeX code needs some packages to be loaded to work correctly.
 Currently it needs
 
     \usepackage{fancyvrb}
+    \usepackage{url}
 
 The standard font in LaTeX (Computer Modern) does not support bold and italic
 variants of its monospace font, an alternative is
