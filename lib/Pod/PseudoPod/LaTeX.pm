@@ -13,6 +13,8 @@ sub new
     my ( $class, %args ) = @_;
     my $self             = $class->SUPER::new(%args);
 
+    $self->{keep_ligatures} = exists($args{ligatures}) ? $args{ligatures} : 0;
+
     $self->accept_targets_as_text(
         qw( sidebar blockquote programlisting screen figure table latex
             PASM PIR PIR_FRAGMENT PASM_FRAGMENT PIR_FRAGMENT_INVALID )
@@ -81,7 +83,7 @@ sub encode_text
     $text =~ s/\.{3}\s*/\\ldots /g;
 
     # fix the ligatures
-    $text =~ s/f([fil])/f\\mbox{}$1/g;
+    $text =~ s/f([fil])/f\\mbox{}$1/g unless $self->{keep_ligatures};
 
     # fix emdashes
     $text =~ s/\s--\s/---/g;
@@ -682,6 +684,22 @@ variants of its monospace font, an alternative is
     \usepackage[T1]{fontenc}
     \usepackage{textcomp}
     \usepackage[scaled]{beramono}
+
+=head1 MODULE OPTIONS
+
+Currently we support:
+
+=over
+
+=item C<keep_ligatures>
+
+LaTeX usually joins some pair of letters (ff, fi and fl), named
+ligatures. By default the module split thems. If you prefer to render
+them with ligatures, use:
+
+  my $parser = Pod::PseudoPod::LaTeX->new( keep_ligatures => 1 );
+
+=back
 
 =head1 STYLES / EMITTING ENVIRONMENTS
 
