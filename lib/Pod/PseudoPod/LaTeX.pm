@@ -13,7 +13,7 @@ sub new
     my ( $class, %args ) = @_;
     my $self             = $class->SUPER::new(%args);
 
-    $self->{keep_ligatures} = exists($args{ligatures}) ? $args{ligatures} : 0;
+    $self->{keep_ligatures} = exists($args{keep_ligatures}) ? $args{keep_ligatures} : 0;
 
     $self->accept_targets_as_text(
         qw( sidebar blockquote programlisting screen figure table latex
