@@ -13,8 +13,10 @@ sub new
     my ( $class, %args ) = @_;
     my $self             = $class->SUPER::new(%args);
 
+    $self->{keep_ligatures} = exists($args{keep_ligatures}) ? $args{keep_ligatures} : 0;
+
     $self->accept_targets_as_text(
-        qw( sidebar blockquote programlisting screen figure table
+        qw( sidebar blockquote programlisting screen figure table latex
             PASM PIR PIR_FRAGMENT PASM_FRAGMENT PIR_FRAGMENT_INVALID )
     );
 
@@ -58,6 +60,7 @@ sub encode_text
     my ( $self, $text ) = @_;
 
     return $self->encode_verbatim_text($text) if $self->{flags}{in_verbatim};
+    return $text if $self->{flags}{in_for_latex};
     return $text if $self->{flags}{in_xref};
     return $text if $self->{flags}{in_figure};
 
@@ -80,7 +83,7 @@ sub encode_text
     $text =~ s/\.{3}\s*/\\ldots /g;
 
     # fix the ligatures
-    $text =~ s/f([fil])/f\\mbox{}$1/g;
+    $text =~ s/f([fil])/f\\mbox{}$1/g unless $self->{keep_ligatures};
 
     # fix emdashes
     $text =~ s/\s--\s/---/g;
@@ -311,16 +314,29 @@ sub end_F
 sub start_for
 {
     my ( $self, $flags ) = @_;
+
+    if ($flags->{target} =~ /^latex$/i) { # support latex, LaTeX, et al
+        $self->{scratch} .= "\n\n";
+        $self->{flags}{in_for_latex}++;
+    }
 }
 
 sub end_for
 {
-    my $self = shift;
+    my ( $self, $flags ) = @_;
+
+    if ($flags->{target} =~ /^latex$/i) { # support latex, LaTeX, et al
+        $self->{scratch} .= "\n\n";
+        $self->{flags}{in_for_latex}--;
+        $self->emit;
+    }
 }
 
 sub start_Verbatim
 {
     my $self = shift;
+
+    return if $self->{flags}{in_for_latex};
 
     my $verb_options = "commandchars=\\\\\\{\\}";
     eval {
@@ -339,6 +355,9 @@ sub start_Verbatim
 sub end_Verbatim
 {
     my $self = shift;
+
+    return if $self->{flags}{in_for_latex};
+
     $self->{scratch} .= "\n\\end{Verbatim}\n"
                      .  "\\vspace{-6pt}\n";
 
@@ -538,6 +557,7 @@ sub start_item_text
 sub start_sidebar
 {
     my ( $self, $flags ) = @_;
+
     my $title;
     $title = $self->encode_text( $flags->{title} ) if $flags->{title};
 
@@ -603,6 +623,7 @@ BEGIN
         I => [ 'emph',     '' ],
         U => [ 'emph',     '' ],
         R => [ 'emph',     '' ],
+        L => [ 'url',      '' ],
         N => [ 'footnote', '' ],
     );
 
@@ -655,6 +676,7 @@ The generated LaTeX code needs some packages to be loaded to work correctly.
 Currently it needs
 
     \usepackage{fancyvrb}
+    \usepackage{url}
 
 The standard font in LaTeX (Computer Modern) does not support bold and italic
 variants of its monospace font, an alternative is
@@ -662,6 +684,22 @@ variants of its monospace font, an alternative is
     \usepackage[T1]{fontenc}
     \usepackage{textcomp}
     \usepackage[scaled]{beramono}
+
+=head1 MODULE OPTIONS
+
+Currently we support:
+
+=over
+
+=item C<keep_ligatures>
+
+LaTeX usually joins some pair of letters (ff, fi and fl), named
+ligatures. By default the module split thems. If you prefer to render
+them with ligatures, use:
+
+  my $parser = Pod::PseudoPod::LaTeX->new( keep_ligatures => 1 );
+
+=back
 
 =head1 STYLES / EMITTING ENVIRONMENTS
 
