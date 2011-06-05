@@ -675,8 +675,9 @@ Perhaps a little code snippet.
 The generated LaTeX code needs some packages to be loaded to work correctly.
 Currently it needs
 
-    \usepackage{fancyvrb}
-    \usepackage{url}
+    \usepackage{fancyvrb}  % for Screen and Verbatim environments
+    \usepackage{url}       % for L<> URLs
+    \usepackage{titleref}  % for A<> generated code
 
 The standard font in LaTeX (Computer Modern) does not support bold and italic
 variants of its monospace font, an alternative is
