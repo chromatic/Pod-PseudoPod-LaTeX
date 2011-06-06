@@ -341,8 +341,8 @@ sub start_Verbatim
     my $verb_options = "commandchars=\\\\\\{\\}";
     eval {
         if ($self->{curr_open}[-1][-1]{target} eq 'screen') {
-            $verb_options .= ',frame=single,label='
-                             . $self->{labels}{screen};
+            my $label = $self->{curr_open}[-1][-1]{title} || $self->{labels}{screen};
+            $verb_options .= ",frame=single,label=$label";
         }
     };
 

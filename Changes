@@ -6,6 +6,7 @@ Revision history for Pod-PseudoPod-LaTeX
     - support =for latex (Alberto Simões)
     - render L<> as \url (Alberto Simões)
     - make ligatures removal optional (Alberto Simões)
+    - support optional titles for 'screen' (Alberto Simões)
 
 1.101600  Wed Jun 9 13:48:24 2010
     - made bin/ppod2latex installable (Jerome Quelin, RT #58269)
