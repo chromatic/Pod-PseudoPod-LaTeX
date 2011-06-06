@@ -271,7 +271,7 @@ sub end_A
         $self->{scratch} .= '\\emph{\\titleref{' . $clean_xref . '}}';
     }
 
-    $self->{scratch} .= 'on page '
+    $self->{scratch} .= ' on page~'
                      .  '\\pageref{' . $clean_xref . '}';
 
     $self->{flags}{in_xref}--;
@@ -318,6 +318,11 @@ sub start_for
     if ($flags->{target} =~ /^latex$/i) { # support latex, LaTeX, et al
         $self->{scratch} .= "\n\n";
         $self->{flags}{in_for_latex}++;
+    } elsif (exists($flags->{'~really'}) &&
+             $flags->{'~really'} eq "=begin" &&
+             exists($self->{emit_environment}{$flags->{target}})) {
+        $self->{scratch} .= sprintf("\n\\begin{%s}\n",
+                                    $self->{emit_environment}{$flags->{target}});
     }
 }
 
@@ -328,6 +333,10 @@ sub end_for
     if ($flags->{target} =~ /^latex$/i) { # support latex, LaTeX, et al
         $self->{scratch} .= "\n\n";
         $self->{flags}{in_for_latex}--;
+        $self->emit;
+    } elsif (exists($self->{emit_environment}{$flags->{target}})) {
+        $self->{scratch} .= sprintf("\\end{%s}\n\n",
+                                    $self->{emit_environment}{$flags->{target}});
         $self->emit;
     }
 }
@@ -709,6 +718,16 @@ and values are latex environments. Use this method if you would like
 C<Pod::PseudoPod::LaTeX> to emit a simple C<\begin{foo}...\end{foo}> environment
 rather than emit specific formatting codes. You must define any environemtns you
 use in this way in your latex prelude.
+
+You can define your own environments easily. First you need to define
+the C<=begin...=end> environment with:
+
+  $parser->acept_target_as_text('my_environment');
+
+Then, you can use the C<emit_environments> method to tell
+C<Pod::PseudoPod::LaTeX> what LaTeX environment to emit:
+
+  $parser->emit_environemnts('my_environment' => 'latex_env');
 
 =head1 AUTHOR
 
