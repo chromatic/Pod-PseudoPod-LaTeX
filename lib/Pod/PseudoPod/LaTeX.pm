@@ -213,9 +213,13 @@ sub end_X
 		$t =~ s/([!|@])/"$1/g;
 		push @terms, $t;
 	}
-    $self->{scratch}  = pop( @{ $self->{stack} } )
-                      . '\\index{' . join('!', @terms) . '}';
+    {
+        no warnings;
+        $self->{scratch}  = pop(@{ $self->{stack} })
+          . '\\index{' . join('!', @terms) . '}';
+    }
 }
+
 
 sub start_Z
 {
@@ -233,8 +237,11 @@ sub end_Z
     # sanitize crossreference names
     $clean_xref =~ s/[^\w:]/-/g;
 
-    $self->{scratch}  = pop( @{ $self->{stack} } )
-                      . '\\label{' . $clean_xref . '}';
+    {
+        no warnings;
+        $self->{scratch}  = pop( @{ $self->{stack} } )
+          . '\\label{' . $clean_xref . '}';
+    }
     $self->{flags}{in_xref}--;
 }
 
