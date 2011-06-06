@@ -22,7 +22,7 @@ sub new
     );
 
     # These do not. Content is not touched.
-    $self->accept_taget('latex');
+    $self->accept_target('latex');
 
     $self->{scratch} ||= '';
     $self->{stack}     = [];
