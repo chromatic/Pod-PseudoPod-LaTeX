@@ -737,7 +737,16 @@ the C<=begin...=end> environment with:
 Then, you can use the C<emit_environments> method to tell
 C<Pod::PseudoPod::LaTeX> what LaTeX environment to emit:
 
-  $parser->emit_environemnts('my_environment' => 'latex_env');
+  $parser->emit_environments('my_environment' => 'latex_env');
+
+Also, if C<my_environment> is used in POD with a title, it is passed
+as the first argument to the LaTeX environment. That is,
+
+  =begin my_environment Some title
+
+Will generate
+
+  \begin{latex_env}{Some title}
 
 =head1 AUTHOR
 
