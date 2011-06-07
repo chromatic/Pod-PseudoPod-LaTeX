@@ -328,8 +328,11 @@ sub start_for
     } elsif (exists($flags->{'~really'}) &&
              $flags->{'~really'} eq "=begin" &&
              exists($self->{emit_environment}{$flags->{target}})) {
-        $self->{scratch} .= sprintf("\n\\begin{%s}\n",
-                                    $self->{emit_environment}{$flags->{target}});
+        my $title = "";
+        $title = "{".$flags->{title}."}" if exists $flags->{title};
+        $self->{scratch} .= sprintf("\n\\begin{%s}%s\n",
+                                    $self->{emit_environment}{$flags->{target}},
+                                    $title);
     }
 }
 

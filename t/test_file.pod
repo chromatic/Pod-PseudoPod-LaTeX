@@ -128,3 +128,9 @@ Second
 Fooled you!
 
 =back
+
+=begin foo Title
+
+Something
+
+=end
