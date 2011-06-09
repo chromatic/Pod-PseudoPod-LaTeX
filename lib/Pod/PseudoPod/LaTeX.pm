@@ -214,7 +214,7 @@ sub end_X
 		push @terms, $t;
 	}
     {
-        no warnings;
+        no warnings 'uninitialized';
         $self->{scratch}  = pop(@{ $self->{stack} })
           . '\\index{' . join('!', @terms) . '}';
     }
@@ -238,7 +238,7 @@ sub end_Z
     $clean_xref =~ s/[^\w:]/-/g;
 
     {
-        no warnings;
+        no warnings 'uninitialized';
         $self->{scratch}  = pop( @{ $self->{stack} } )
           . '\\label{' . $clean_xref . '}';
     }
