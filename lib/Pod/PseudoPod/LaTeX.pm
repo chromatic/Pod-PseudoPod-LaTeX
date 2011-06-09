@@ -15,10 +15,14 @@ sub new
 
     $self->{keep_ligatures} = exists($args{keep_ligatures}) ? $args{keep_ligatures} : 0;
 
+    # These have their contents parsed
     $self->accept_targets_as_text(
-        qw( sidebar blockquote programlisting screen figure table latex
+        qw( sidebar blockquote programlisting screen figure table
             PASM PIR PIR_FRAGMENT PASM_FRAGMENT PIR_FRAGMENT_INVALID )
     );
+
+    # These do not. Content is not touched.
+    $self->accept_target('latex');
 
     $self->{scratch} ||= '';
     $self->{stack}     = [];
@@ -59,8 +63,14 @@ sub encode_text
 {
     my ( $self, $text ) = @_;
 
+    my $resolve = 1;
+    eval {
+        no warnings;
+        $resolve = ($self->{curr_open}[-1][-1]{'~resolve'} != 0);
+    };
+    return $text unless $resolve;
+
     return $self->encode_verbatim_text($text) if $self->{flags}{in_verbatim};
-    return $text if $self->{flags}{in_for_latex};
     return $text if $self->{flags}{in_xref};
     return $text if $self->{flags}{in_figure};
 
@@ -324,7 +334,6 @@ sub start_for
 
     if ($flags->{target} =~ /^latex$/i) { # support latex, LaTeX, et al
         $self->{scratch} .= "\n\n";
-        $self->{flags}{in_for_latex}++;
     } elsif (exists($flags->{'~really'}) &&
              $flags->{'~really'} eq "=begin" &&
              exists($self->{emit_environment}{$flags->{target}})) {
@@ -342,7 +351,6 @@ sub end_for
 
     if ($flags->{target} =~ /^latex$/i) { # support latex, LaTeX, et al
         $self->{scratch} .= "\n\n";
-        $self->{flags}{in_for_latex}--;
         $self->emit;
     } elsif (exists($self->{emit_environment}{$flags->{target}})) {
         $self->{scratch} .= sprintf("\\end{%s}\n\n",
@@ -354,8 +362,6 @@ sub end_for
 sub start_Verbatim
 {
     my $self = shift;
-
-    return if $self->{flags}{in_for_latex};
 
     my $verb_options = "commandchars=\\\\\\{\\}";
     eval {
@@ -374,8 +380,6 @@ sub start_Verbatim
 sub end_Verbatim
 {
     my $self = shift;
-
-    return if $self->{flags}{in_for_latex};
 
     $self->{scratch} .= "\n\\end{Verbatim}\n"
                      .  "\\vspace{-6pt}\n";
