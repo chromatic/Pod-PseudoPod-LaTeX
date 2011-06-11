@@ -67,7 +67,7 @@ sub encode_text
 
     my $resolve = 1;
     eval {
-        no warnings;
+        no warnings 'uninitialized';
         if (exists($self->{curr_open}[-1][-1]{'~resolve'}) &&
             $self->{curr_open}[-1][-1]{'~resolve'} == 0)
           {
@@ -371,6 +371,7 @@ sub start_Verbatim
 
     my $verb_options = "commandchars=\\\\\\{\\}";
     eval {
+        no warnings 'uninitialized';
         if ($self->{curr_open}[-1][-1]{target} eq 'screen') {
             my $label = $self->{curr_open}[-1][-1]{title} || $self->{labels}{screen};
             $verb_options .= ",frame=single,label=$label";
