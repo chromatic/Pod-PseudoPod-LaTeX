@@ -91,7 +91,9 @@ Bulleted lists rule too:
 
 =item * BANG
 
-=item * BANG BANG
+=item * $BANG BANG$
+
+And they might have more lines. And they _ are $ properly %  escaped.
 
 =item * BANGERANG!
 
@@ -104,6 +106,10 @@ Definition lists are useful:
 =item wakawaka
 
 What Pac-Man says.
+
+=item has_method
+
+And add_method are escaped
 
 =item ook ook
 
@@ -133,4 +139,6 @@ Fooled you!
 
 Something
 
-=end
+=end foo
+
+
