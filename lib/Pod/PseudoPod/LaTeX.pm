@@ -8,6 +8,8 @@ use 5.008006;
 use strict;
 use warnings;
 
+
+
 sub new
 {
     my ( $class, %args ) = @_;
@@ -66,7 +68,11 @@ sub encode_text
     my $resolve = 1;
     eval {
         no warnings;
-        $resolve = ($self->{curr_open}[-1][-1]{'~resolve'} != 0);
+        if (exists($self->{curr_open}[-1][-1]{'~resolve'}) &&
+            $self->{curr_open}[-1][-1]{'~resolve'} == 0)
+          {
+              $resolve = 0;
+          }
     };
     return $text unless $resolve;
 

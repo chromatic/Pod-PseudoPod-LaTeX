@@ -6,7 +6,7 @@ use warnings;
 use IO::String;
 use File::Spec::Functions;
 
-use Test::More tests => 26;
+use Test::More tests => 30;
 
 use_ok( 'Pod::PseudoPod::LaTeX' ) or exit;
 
@@ -68,3 +68,15 @@ like( $text, qr/\\index{strange quote a""a}/,
 
 like( $text, qr/\\index{hierarchical terms!omiting trailing spaces}/,
 	'trailing spaces in hierarchical terms should be ignored' );
+
+like( $text, qr/\\\$BANG BANG\\\$/,
+        'escapes works inside items first line');
+
+like( $text, qr/And they \\_ are \\\$ properly \\\% escaped/,
+        'escapes works inside items paragraphs');
+
+like( $text, qr/has\\_method/,
+        'escapes works inside description lists');
+
+like( $text, qr/add\\_method/,
+        'escapes works inside description lists paragraphs');
