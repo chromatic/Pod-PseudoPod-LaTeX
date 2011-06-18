@@ -6,7 +6,7 @@ use warnings;
 use IO::String;
 use File::Spec::Functions;
 
-use Test::More tests => 15;
+use Test::More tests => 18;
 
 use_ok( 'Pod::PseudoPod::LaTeX' ) or exit;
 
@@ -57,3 +57,8 @@ like( $text, qr/\\footnote{but beware of footnotes!}/,
 like( $text, qr/\\index{Special formatting|textit}/,
 	'indexed items need even more special escaping' );
 
+like( $text, qr/mc\$\^\{2\}\$/, 'superscript works' );
+
+like( $text, qr/H\$\_\{2\}\$O/, 'subscript works' );
+
+like( $text, qr[\\url{http://www.google.com/}], 'urls work');

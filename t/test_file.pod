@@ -53,13 +53,17 @@ Hello, this is a sidebar
 
 =end
 
-X<Special formatting> is B<very> important, especially in C<code-like text>,
-for special F<emphasis>, and I<semantic-only emphasis>N<but beware of
-footnotes!>.
+X<Special formatting> is B<very> important, especially in C<code-like
+text>, for special F<emphasis>, and I<semantic-only emphasis>N<but
+beware of footnotes!>. Try to format correctly Google URL: U<<
+http://www.google.com/ >>.
 
 Index entries are more fun, as more special characters must be escaped, with
 a quote sign. E.g. X<negation ! operator>, X<array @ sigil>, X<the pipe |>
 and X<strange quote a"a>.
+
+More, we should be able to have superscripts like I<E = mcG<2>> or
+subscripts, like I<HH<2>O>.
 
 =for latex
 

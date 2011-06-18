@@ -236,7 +236,6 @@ sub end_X
     }
 }
 
-
 sub start_Z
 {
     my $self = shift;
@@ -648,25 +647,27 @@ BEGIN
     }
 
     my %formats = (
-        B => [ 'textbf',   '' ],
-        C => [ 'texttt',   '' ],
-        I => [ 'emph',     '' ],
-        U => [ 'emph',     '' ],
-        R => [ 'emph',     '' ],
-        L => [ 'url',      '' ],
-        N => [ 'footnote', '' ],
+        B => [ '\\textbf',   ''  ],
+        C => [ '\\texttt',   ''  ],
+        I => [ '\\emph',     ''  ],
+        U => [ '\\url',      ''  ],
+        R => [ '\\emph',     ''  ],
+        L => [ '\\url',      ''  ],
+        N => [ '\\footnote', ''  ],
+        G => [ '$^',         '$' ],
+        H => [ '$_',         '$' ],
     );
 
     while ( my ( $code, $fixes ) = each %formats )
     {
         my $start_sub = sub {
             my $self = shift;
-            $self->{scratch} .= '\\' . $fixes->[0] . '{';
+            $self->{scratch} .= $fixes->[0] . '{';
         };
 
         my $end_sub = sub {
             my $self = shift;
-            $self->{scratch} .= $fixes->[1] . '}';
+            $self->{scratch} .= '}' . $fixes->[1];
         };
 
         no strict 'refs';
