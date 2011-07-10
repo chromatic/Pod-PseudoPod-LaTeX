@@ -1,1 +1,3 @@
+!.gitignore
 Pod-PseudoPod-LaTeX-*
+.build/*
