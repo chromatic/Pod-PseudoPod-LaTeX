@@ -1,6 +1,8 @@
 Revision history for Pod-PseudoPod-LaTeX
 
 {{$NEXT}}
+
+1.20110710 2011-07-10 15:20:50 America/Los_Angeles
     - added support for custom environments
     - improved screen handling (Dean Serenevy, Moritz Lenz)
     - support =for latex (Alberto Simões)
