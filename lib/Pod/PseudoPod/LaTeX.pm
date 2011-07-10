@@ -807,14 +807,17 @@ See also L<perlpod>, L<Pod::Simple> and L<Pod::TeX>.  I did not reuse the
 latter because I need to support the additional POD directives found in
 PseudoPod.
 
+Thanks to multiple contributors, including (but not limited to) Dean Serenevy,
+Moritz Lenz, Alberto Simões, and Jerome Quelin.
+
 Thanks to Onyx Neon Press (L<http://www.onyxneon.com/>) for sponsoring this
 work under free software guidelines.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright (c) 2006, 2009, 2010 chromatic, some rights reserved.
+Copyright (c) 2006, 2009 - 2011, chromatic.
 
 This program is free software; you can redistribute it and/or modify it under
-the same terms as Perl 5.8 itself.
+the same terms as Perl 5.14
 
 =cut
