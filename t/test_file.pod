@@ -145,4 +145,12 @@ Something
 
 =end foo
 
+=begin figure Figure Title
+
+This is the figure body!
+
+=end figure
+
+
+
 

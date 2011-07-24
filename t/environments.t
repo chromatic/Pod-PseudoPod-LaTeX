@@ -6,7 +6,7 @@ use warnings;
 use IO::String;
 use File::Spec::Functions;
 
-use Test::More tests => 3;
+use Test::More tests => 5;
 
 use_ok( 'Pod::PseudoPod::LaTeX' ) or exit;
 
@@ -25,3 +25,8 @@ like( $text, qr/\\LaTeX/,
     '\LaTeX in a =for latex section remains intact' );
 
 like( $text, qr/\\begin{foo}{Title}/, "title is passed is available" );
+
+like $text, qr/\\begin{figure}/, "figure gets rendered";
+
+## would like to support B<> and some other in the caption, but other time
+like $text, qr/\\caption{Figure Title}/, "figure caption is rendered";
