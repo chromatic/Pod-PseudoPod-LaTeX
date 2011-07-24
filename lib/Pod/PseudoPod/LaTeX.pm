@@ -15,7 +15,8 @@ sub new
     my ( $class, %args ) = @_;
     my $self             = $class->SUPER::new(%args);
 
-    $self->{keep_ligatures} = exists($args{keep_ligatures}) ? $args{keep_ligatures} : 0;
+    $self->{keep_ligatures}  = exists($args{keep_ligatures})  ? $args{keep_ligatures}  : 0;
+    $self->{captions_bellow} = exists($args{captions_bellow}) ? $args{captions_bellow} : 0;
 
     # These have their contents parsed
     $self->accept_targets_as_text(
@@ -414,11 +415,16 @@ sub start_figure
 
     $self->{scratch} .= "\\begin{figure}[!h]\n";
 
-    if ( $flags->{title} )
-    {
-        my $title = $self->encode_text( $flags->{title} );
-        $title    =~ s/^graphic\s*//;
-        $self->{scratch} .= "\\caption{" . $title . "}\n";
+    $self->{_dangling_title} = undef; # just in case; Do not think it is worth a stack.
+    if ( $flags->{title} ) {
+        if ($self->{captions_bellow}) {
+            $self->{_dangling_title} = $flags->{title};
+        }
+        else {
+            my $title = $self->encode_text( $flags->{title} );
+            $title    =~ s/^graphic\s*//;
+            $self->{scratch} .= "\\caption{" . $title . "}\n";
+        }
     }
 
     $self->{scratch} .= "\\begin{center}\n";
@@ -429,6 +435,15 @@ sub end_figure
 {
     my $self = shift;
     $self->{scratch} .= "\\end{center}\n";
+
+    if ($self->{captions_bellow} && $self->{_dangling_title})
+    {
+        my $title = $self->encode_text( $self->{_dangling_title} );
+        $title    =~ s/^graphic\s*//;
+        $self->{scratch} .= "\\caption{" . $title . "}\n";
+        $self->{_dangling_title} = undef; # clear it
+    }
+
     $self->{scratch} .= "\\end{figure}\n";
     $self->{flags}{in_figure}--;
     $self->emit();
@@ -441,11 +456,17 @@ sub start_table
     # Open the table
     $self->{scratch} .= "\\begin{table}[!h]\n";
 
+    $self->{_dangling_title} = undef; # just in case; Do not think it is worth a stack.
     if ( $flags->{title} )
     {
-        my $title = $self->encode_text( $flags->{title} );
-        $title    =~ s/^graphic\s*//;
-        $self->{scratch} .= "\\caption{" . $title . "}\n";
+        if ($self->{captions_bellow}) {
+            $self->{_dangling_title} = $flags->{title};
+        }
+        else {
+            my $title = $self->encode_text( $flags->{title} );
+            $title    =~ s/^graphic\s*//;
+            $self->{scratch} .= "\\caption{" . $title . "}\n";
+        }
     }
     $self->{scratch} .= "\\begin{center}\n";
 
@@ -476,8 +497,18 @@ sub end_table
 
     # Close the table
     $self->{scratch} .= "\\end{tabular}\n"
-                     .  "\\end{center}\n"
-                     .  "\\end{table}\n";
+                     .  "\\end{center}\n";
+
+
+    if ($self->{captions_bellow} && $self->{_dangling_title})
+    {
+        my $title = $self->encode_text( $self->{_dangling_title} );
+        $title    =~ s/^graphic\s*//;
+        $self->{scratch} .= "\\caption{" . $title . "}\n";
+        $self->{_dangling_title} = undef; # clear it
+    }
+
+    $self->{scratch}.= "\\end{table}\n";
 
     $self->{flags}{in_table}--;
     delete $self->{table_rows};
@@ -695,7 +726,7 @@ Perhaps a little code snippet.
     use Pod::PseudoPod::LaTeX;
 
     my $parser = Pod::PseudoPod::LaTeX->new();
-        $parser->emit_environments( sidebar => 'sidebar' );
+    $parser->emit_environments( sidebar => 'sidebar' );
     $parser->output_fh( $some_fh );
     $parser->parse_file( 'some_document.pod' );
 
@@ -730,6 +761,11 @@ ligatures. By default the module split thems. If you prefer to render
 them with ligatures, use:
 
   my $parser = Pod::PseudoPod::LaTeX->new( keep_ligatures => 1 );
+
+=item C<captions_bellow>
+
+Set this flag to a true value if you prefer that figures and tables
+captions are placed bellow the object and not above (the default).
 
 =back
 

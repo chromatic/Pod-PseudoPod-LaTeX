@@ -2,6 +2,9 @@ Revision history for Pod-PseudoPod-LaTeX
 
 {{$NEXT}}
 
+    - add support to 'captions_bellow' to make captions bellow the
+      objects. (Alberto Simões)
+
 1.20110710 2011-07-10 15:20:50 America/Los_Angeles
     - added support for custom environments
     - improved screen handling (Dean Serenevy, Moritz Lenz)
