@@ -719,7 +719,7 @@ Pod::PseudoPod::LaTeX - convert Pod::PseudoPod documents into LaTeX
 
 =head1 SYNOPSIS
 
-This module is a Pod::PseudoPod subclass, itself a Pod::Simple subclass.  This
+This module is a C<Pod::PseudoPod> subclass, itself a C<Pod::Simple> subclass.  This
 means that this is a full-fledged POD parser.  Anything those modules can do,
 this can do.
 
