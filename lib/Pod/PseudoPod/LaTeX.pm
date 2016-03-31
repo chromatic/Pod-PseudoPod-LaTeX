@@ -711,6 +711,8 @@ BEGIN
 1;
 __END__
 
+=encoding utf8
+
 =head1 NAME
 
 Pod::PseudoPod::LaTeX - convert Pod::PseudoPod documents into LaTeX
