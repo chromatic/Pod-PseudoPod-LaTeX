@@ -758,15 +758,15 @@ Currently we support:
 
 =item C<keep_ligatures>
 
-LaTeX usually joins some pair of letters (ff, fi and fl), named
-ligatures. By default the module split thems. If you prefer to render
+LaTeX usually joins some pairs of letters (ff, fi and fl), named
+ligatures. By default the module splits them. If you prefer to render
 them with ligatures, use:
 
   my $parser = Pod::PseudoPod::LaTeX->new( keep_ligatures => 1 );
 
 =item C<captions_bellow>
 
-Set this flag to a true value if you prefer that figures and tables
+Set this flag to a true value if you prefer that figure and table
 captions are placed bellow the object and not above (the default).
 
 =back
@@ -774,10 +774,10 @@ captions are placed bellow the object and not above (the default).
 =head1 STYLES / EMITTING ENVIRONMENTS
 
 The C<emit_environments> method accepts a hashref whose keys are POD environments
-and values are latex environments. Use this method if you would like
+and values are LaTeX environments. Use this method if you would like
 C<Pod::PseudoPod::LaTeX> to emit a simple C<\begin{foo}...\end{foo}> environment
-rather than emit specific formatting codes. You must define any environemtns you
-use in this way in your latex prelude.
+rather than emit specific formatting codes. You must define any environments you
+use in this way in your LaTeX prelude.
 
 You can define your own environments easily. First you need to define
 the C<=begin...=end> environment with:
