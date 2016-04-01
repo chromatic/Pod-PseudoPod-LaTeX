@@ -15,7 +15,10 @@ GetOptions(
     "captions_below" => \my $captions_below,
 ) or pod2usage(2);
 
-die "$0 <files to pdfify>\n" unless @ARGV;
+pod2usage(
+    -msg     => "Please enter a file or list of files",
+    -exitval => 2,
+) unless @ARGV;
 
 for my $file (@ARGV)
 {
