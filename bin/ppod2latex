@@ -7,6 +7,13 @@ use File::Basename;
 use File::Spec::Functions;
 use File::Path qw(mkpath);
 use Pod::PseudoPod::LaTeX;
+use Getopt::Long;
+use Pod::Usage;
+
+GetOptions(
+    "keep_ligatures" => \my $keep_ligatures,
+    "captions_below" => \my $captions_below,
+) or pod2usage(2);
 
 die "$0 <files to pdfify>\n" unless @ARGV;
 
@@ -20,7 +27,10 @@ for my $file (@ARGV)
     mkpath( 'build' ) unless -e 'build';
     open( my $fh, '>', $outfile ) or die "Can't write to '$outfile': $!\n";
 
-    my $parser    = Pod::PseudoPod::LaTeX->new();
+    my $parser    = Pod::PseudoPod::LaTeX->new(
+	keep_ligatures => $keep_ligatures,
+	captions_below => $captions_below,
+    );
     $parser->output_fh( $fh );
 
     warn "$file -> $outfile\n";
