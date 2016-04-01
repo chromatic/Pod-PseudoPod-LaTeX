@@ -16,7 +16,7 @@ sub new
     my $self             = $class->SUPER::new(%args);
 
     $self->{keep_ligatures}  = exists($args{keep_ligatures})  ? $args{keep_ligatures}  : 0;
-    $self->{captions_bellow} = exists($args{captions_bellow}) ? $args{captions_bellow} : 0;
+    $self->{captions_below} = exists($args{captions_below}) ? $args{captions_below} : 0;
 
     # These have their contents parsed
     $self->accept_targets_as_text(
@@ -417,7 +417,7 @@ sub start_figure
 
     $self->{_dangling_title} = undef; # just in case; Do not think it is worth a stack.
     if ( $flags->{title} ) {
-        if ($self->{captions_bellow}) {
+        if ($self->{captions_below}) {
             $self->{_dangling_title} = $flags->{title};
         }
         else {
@@ -436,7 +436,7 @@ sub end_figure
     my $self = shift;
     $self->{scratch} .= "\\end{center}\n";
 
-    if ($self->{captions_bellow} && $self->{_dangling_title})
+    if ($self->{captions_below} && $self->{_dangling_title})
     {
         my $title = $self->encode_text( $self->{_dangling_title} );
         $title    =~ s/^graphic\s*//;
@@ -459,7 +459,7 @@ sub start_table
     $self->{_dangling_title} = undef; # just in case; Do not think it is worth a stack.
     if ( $flags->{title} )
     {
-        if ($self->{captions_bellow}) {
+        if ($self->{captions_below}) {
             $self->{_dangling_title} = $flags->{title};
         }
         else {
@@ -500,7 +500,7 @@ sub end_table
                      .  "\\end{center}\n";
 
 
-    if ($self->{captions_bellow} && $self->{_dangling_title})
+    if ($self->{captions_below} && $self->{_dangling_title})
     {
         my $title = $self->encode_text( $self->{_dangling_title} );
         $title    =~ s/^graphic\s*//;
@@ -764,10 +764,10 @@ them with ligatures, use:
 
   my $parser = Pod::PseudoPod::LaTeX->new( keep_ligatures => 1 );
 
-=item C<captions_bellow>
+=item C<captions_below>
 
 Set this flag to a true value if you prefer that figure and table
-captions are placed bellow the object and not above (the default).
+captions are placed below the object and not above (the default).
 
 =back
 
