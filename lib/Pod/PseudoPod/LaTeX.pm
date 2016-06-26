@@ -178,10 +178,10 @@ my %characters = (
     acute   => sub { qq|\\'| . shift },
     grave   => sub { qq|\\`| . shift },
     uml     => sub { qq|\\"| . shift },
-    cedilla => sub { '\c' },              # ccedilla
+    cedilla => sub { '\c{c}' },           # ccedilla
     opy     => sub { '\copyright' },      # copy
     dash    => sub { '---' },             # mdash
-    lusmn   => sub { '\pm' },             # plusmn
+    lusmn   => sub { '$\pm$' },           # plusmn
     mp      => sub { '\&' },              # amp
 );
 
