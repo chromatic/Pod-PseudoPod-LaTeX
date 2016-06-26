@@ -17,6 +17,7 @@ sub new
 
     $self->{keep_ligatures}  = exists($args{keep_ligatures})  ? $args{keep_ligatures}  : 0;
     $self->{captions_below} = exists($args{captions_below}) ? $args{captions_below} : 0;
+    $self->{full}           = exists($args{full})           ? $args{full}           : 0;
 
     # These have their contents parsed
     $self->accept_targets_as_text(
@@ -43,9 +44,24 @@ sub emit_environments
     }
 }
 
+sub start_Document
+{
+    my $self = shift;
+    if ($self->{full}) {
+        $self->{scratch} .= "\\documentclass[12pt,a4paper]{book}\n"
+                         .  "\\usepackage{fancyvrb}\n"
+                         .  "\\usepackage{url}\n"
+                         .  "\\usepackage{titleref}\n"
+                         .  "\\usepackage[T1]{fontenc}\n"
+                         .  "\\usepackage{textcomp}\n"
+                         .  "\\begin{document}\n";
+    }
+}
+
 sub end_Document
 {
     my $self = shift;
+    $self->{scratch} .= "\\end{document}\n" if $self->{full};
     $self->emit();
 }
 
@@ -762,12 +778,17 @@ LaTeX usually joins some pairs of letters (ff, fi and fl), named
 ligatures. By default the module splits them. If you prefer to render
 them with ligatures, use:
 
-  my $parser = Pod::PseudoPod::LaTeX->new( keep_ligatures => 1 );
+    my $parser = Pod::PseudoPod::LaTeX->new( keep_ligatures => 1 );
 
 =item C<captions_below>
 
 Set this flag to a true value if you prefer that figure and table
 captions are placed below the object and not above (the default).
+
+=item C<full>
+
+Create a standalone document which can immediately be run through C<latex>
+or C<pdflatex>.
 
 =back
 
