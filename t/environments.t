@@ -24,9 +24,9 @@ my $text = join( '', <$fh> );
 like( $text, qr/\\LaTeX/,
     '\LaTeX in a =for latex section remains intact' );
 
-like( $text, qr/\\begin{foo}{Title}/, "title is passed is available" );
+like( $text, qr/\\begin\{foo}\{Title}/, "title is passed is available" );
 
-like $text, qr/\\begin{figure}/, "figure gets rendered";
+like $text, qr/\\begin\{figure}/, "figure gets rendered";
 
 ## would like to support B<> and some other in the caption, but other time
-like $text, qr/\\caption{Figure Title}/, "figure caption is rendered";
+like $text, qr/\\caption\{Figure Title}/, "figure caption is rendered";

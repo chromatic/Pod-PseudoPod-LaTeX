@@ -29,7 +29,7 @@ like( $text, qr/\\\$/,                       '$ should get quoted' );
 like( $text, qr/\\&/,                        '& should get quoted' );
 like( $text, qr/\\%/,                        '% should get quoted' );
 like( $text, qr/ \\_\./,                     '_ should get quoted' );
-like( $text, qr/\\{\\},/,                    '{ and } should get quoted' );
+like( $text, qr/\\\{\\},/,                   '{ and } should get quoted' );
 like( $text, qr/ \$\\sim\$/,                 '~ should get quoted' );
 like( $text, qr/caret \\char94\{\}/,         '^  should get quoted' );
 
@@ -45,28 +45,28 @@ like( $text, qr/ direction\.''/, '... also at the end of a paragraph' );
 
 like( $text, qr/ellipsis\\ldots and/, 'ellipsis needs a translation' );
 
-like( $text, qr/f\\mbox{}lame/, 'fl ligature needs marking' );
+like( $text, qr/f\\mbox\{}lame/, 'fl ligature needs marking' );
 
-like( $text, qr/f\\mbox{}ilk/, 'fi ligature also needs marking' );
+like( $text, qr/f\\mbox\{}ilk/, 'fi ligature also needs marking' );
 
-like( $text, qr/inef\\mbox{}fable/, 'ff ligature also needs marking too' );
+like( $text, qr/inef\\mbox\{}fable/, 'ff ligature also needs marking too' );
 
 like( $text, qr/ligatures---and/,
 	'spacey double dash should become a real emdash' );
 
-like( $text, qr/\\index{negation "! operator}/,
+like( $text, qr/\\index\{negation "! operator}/,
 	'! must me quoted with " in an index entry' );
 
-like( $text, qr/\\index{array "@ sigil}/,
+like( $text, qr/\\index\{array "@ sigil}/,
 	'@ must me quoted with " in an index entry' );
 
-like( $text, qr/\\index{the pipe "|}/,
+like( $text, qr/\\index\{the pipe "|}/,
 	'| must me quoted with " in an index entry' );
 
-like( $text, qr/\\index{strange quote a""a}/,
+like( $text, qr/\\index\{strange quote a""a}/,
 	'non-escaped " must me quoted with another " in an index entry' );
 
-like( $text, qr/\\index{hierarchical terms!omiting trailing spaces}/,
+like( $text, qr/\\index\{hierarchical terms!omiting trailing spaces}/,
 	'trailing spaces in hierarchical terms should be ignored' );
 
 like( $text, qr/\\\$BANG BANG\\\$/,

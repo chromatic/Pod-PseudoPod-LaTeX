@@ -44,22 +44,22 @@ subtest "full option produces standalone document elements" => sub {
 
     like(
         $text,
-        qr/\\documentclass\[12pt,a4paper\]{book}/,
+        qr/\\documentclass\[12pt,a4paper\]\{book}/,
         "standard document class defined"
     );
     like(
         $text,
-        qr{
-            \\usepackage{fancyvrb}\s+
-            \\usepackage{url}\s+
-            \\usepackage{titleref}\s+
-            \\usepackage\[T1\]{fontenc}\s+
-            \\usepackage{textcomp}
-        }x,
+        qr/
+            \\usepackage\{fancyvrb}\s+
+            \\usepackage\{url}\s+
+            \\usepackage\{titleref}\s+
+            \\usepackage\[T1\]\{fontenc}\s+
+            \\usepackage\{textcomp}
+        /x,
         "base packages package used"
     );
-    like( $text, qr/\\begin{document}/, "document is begun" );
-    like( $text, qr/\\end{document}/,   "document is ended" );
+    like( $text, qr/\\begin\{document}/, "document is begun" );
+    like( $text, qr/\\end\{document}/,   "document is ended" );
 };
 
 subtest "full option disabled does not produce standalone elements" => sub {
@@ -75,12 +75,12 @@ subtest "full option disabled does not produce standalone elements" => sub {
 
     unlike(
         $text,
-        qr/\\documentclass\[12pt,a4paper\]{book}/,
+        qr/\\documentclass\[12pt,a4paper\]\{book}/,
         "standard document class not defined"
     );
     unlike( $text, qr/\\usepackage/,      "no packages are used" );
-    unlike( $text, qr/\\begin{document}/, "document is not begun" );
-    unlike( $text, qr/\\end{document}/,   "document is not ended" );
+    unlike( $text, qr/\\begin\{document}/, "document is not begun" );
+    unlike( $text, qr/\\end\{document}/,   "document is not ended" );
 };
 
 # vim: expandtab shiftwidth=4

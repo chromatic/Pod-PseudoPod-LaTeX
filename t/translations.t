@@ -30,35 +30,35 @@ like( $text, qr/na\\"ive/,
 like( $text, qr/attach\\`e/,
 	'grave diacritic should translate to single backquote escape' );
 
-like( $text, qr/Fran\\c{c}aise/, 'cedilla should translate to \c{c}' );
+like( $text, qr/Fran\\c\{c}aise/, 'cedilla should translate to \c{c}' );
 
 like( $text, qr/\\copyright caper/, 'copyright symbol should get escaped' );
 
 like( $text, qr/ligatures---and/,
 	'double hyphen dash should become unspacey long dash' );
 
-like( $text, qr/\\ensuremath{\\pm} some constant/, 'plusmn should get an escape too' );
+like( $text, qr/\\ensuremath\{\\pm} some constant/, 'plusmn should get an escape too' );
 
-like( $text, qr/\\textbf{very} important/,
+like( $text, qr/\\textbf\{very} important/,
 	'bold text needs a formatting directive' );
 
-like( $text, qr/\\texttt{code-like text}/,
+like( $text, qr/\\texttt\{code-like text}/,
 	'code-marked text needs a formatting directive' );
 
-like( $text, qr/special \\emph{emphasis}/,
+like( $text, qr/special \\emph\{emphasis}/,
 	'file paths need an emphasis directive' );
 
-like( $text, qr/\\emph{semantic-only emphasis}/,
+like( $text, qr/\\emph\{semantic-only emphasis}/,
 	'... and so does italicized text' );
 
-like( $text, qr/\\footnote{but beware of footnotes!}/,
+like( $text, qr/\\footnote\{but beware of footnotes!}/,
 	'footnotes need special escaping too' );
 
-like( $text, qr/\\index{Special formatting|textit}/,
+like( $text, qr/\\index\{Special formatting|textit}/,
 	'indexed items need even more special escaping' );
 
 like( $text, qr/mc\$\^\{2\}\$/, 'superscript works' );
 
 like( $text, qr/H\$\_\{2\}\$O/, 'subscript works' );
 
-like( $text, qr[\\url{http://www.google.com/}], 'urls work');
+like( $text, qr[\\url\{http://www.google.com/}], 'urls work');
