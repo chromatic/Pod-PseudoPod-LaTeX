@@ -194,11 +194,11 @@ my %characters = (
     acute   => sub { qq|\\'| . shift },
     grave   => sub { qq|\\`| . shift },
     uml     => sub { qq|\\"| . shift },
-    cedilla => sub { '\c{c}' },           # ccedilla
-    opy     => sub { '\copyright' },      # copy
-    dash    => sub { '---' },             # mdash
-    lusmn   => sub { '$\pm$' },           # plusmn
-    mp      => sub { '\&' },              # amp
+    cedilla => sub { '\c{c}' },              # ccedilla
+    opy     => sub { '\copyright' },         # copy
+    dash    => sub { '---' },                # mdash
+    lusmn   => sub { '\ensuremath{\pm}' },   # plusmn
+    mp      => sub { '\&' },                 # amp
 );
 
 sub end_E
