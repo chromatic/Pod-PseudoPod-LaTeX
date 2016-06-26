@@ -30,14 +30,14 @@ like( $text, qr/na\\"ive/,
 like( $text, qr/attach\\`e/,
 	'grave diacritic should translate to single backquote escape' );
 
-like( $text, qr/Fran\\caise/, 'cedilla should translate to \c' );
+like( $text, qr/Fran\\c{c}aise/, 'cedilla should translate to \c{c}' );
 
 like( $text, qr/\\copyright caper/, 'copyright symbol should get escaped' );
 
 like( $text, qr/ligatures---and/,
 	'double hyphen dash should become unspacey long dash' );
 
-like( $text, qr/\\pm some constant/, 'plusmn should get an escape too' );
+like( $text, qr/\$\\pm\$ some constant/, 'plusmn should get an escape too' );
 
 like( $text, qr/\\textbf{very} important/,
 	'bold text needs a formatting directive' );
