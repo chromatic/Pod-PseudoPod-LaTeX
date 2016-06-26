@@ -13,6 +13,7 @@ use Pod::Usage;
 GetOptions(
     "keep_ligatures" => \my $keep_ligatures,
     "captions_below" => \my $captions_below,
+    "full"           => \my $full,
 ) or pod2usage(2);
 
 pod2usage(
@@ -33,6 +34,7 @@ for my $file (@ARGV)
     my $parser    = Pod::PseudoPod::LaTeX->new(
 	keep_ligatures => $keep_ligatures,
 	captions_below => $captions_below,
+	full           => $full,
     );
     $parser->output_fh( $fh );
 
@@ -51,7 +53,7 @@ ppod2latex - convert PseudoPod to LaTeX
 
 =head1 SYNOPSIS
 
-    ppod2latex [--keep_ligatures] [--captions_below] <file-list>
+    ppod2latex [--keep_ligatures] [--captions_below] [--full] <file-list>
 
 =head1 DESCRIPTION
 
@@ -74,5 +76,10 @@ ft will be joined when LaTeX produces its output.
 
 Put figure and table captions below the object as opposed to above, which is
 the default.
+
+=item full
+
+Create a standalone document which can immediately be run through C<latex>
+or C<pdflatex>.
 
 =back
