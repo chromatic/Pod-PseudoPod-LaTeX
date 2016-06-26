@@ -2,6 +2,8 @@ Revision history for Pod-PseudoPod-LaTeX
 
 {{$NEXT}}
 
+1.20160626 2016-06-26 19:32:03+02:00 Europe/Amsterdam
+
     - add support to 'captions_below' to make captions below the
       objects. (Alberto Simões)
     - add --full option to generate a full LaTex document. (Paul Cochrane)
