@@ -734,7 +734,7 @@ Perhaps a little code snippet.
 
     ...
 
-=head1 LATEX PRELUDE
+=head1 LATEX PREAMBLE
 
 The generated LaTeX code needs some packages to be loaded to work correctly.
 Currently it needs
