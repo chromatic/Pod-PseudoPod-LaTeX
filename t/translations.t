@@ -37,7 +37,7 @@ like( $text, qr/\\copyright caper/, 'copyright symbol should get escaped' );
 like( $text, qr/ligatures---and/,
 	'double hyphen dash should become unspacey long dash' );
 
-like( $text, qr/\$\\pm\$ some constant/, 'plusmn should get an escape too' );
+like( $text, qr/\\ensuremath{\\pm} some constant/, 'plusmn should get an escape too' );
 
 like( $text, qr/\\textbf{very} important/,
 	'bold text needs a formatting directive' );
