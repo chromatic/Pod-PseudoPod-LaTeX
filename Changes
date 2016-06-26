@@ -2,8 +2,11 @@ Revision history for Pod-PseudoPod-LaTeX
 
 {{$NEXT}}
 
-    - add support to 'captions_bellow' to make captions bellow the
+    - add support to 'captions_below' to make captions below the
       objects. (Alberto Simões)
+    - add --full option to generate a full LaTex document. (Paul Cochrane)
+    - Fixed translation of cedilla and plusmn characters. (Paul Cochrane)
+    - Avoid deprecation warnings in the test suite. (Moritz Lenz)
 
 1.20110710 2011-07-10 15:20:50 America/Los_Angeles
     - added support for custom environments
