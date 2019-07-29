@@ -1,6 +1,7 @@
 Revision history for Pod-PseudoPod-LaTeX
 
 {{$NEXT}}
+    - generate META.json (Mohammad S Anwar, GH PR #21)
 
 1.20160626 2016-06-26 19:32:03+02:00 Europe/Amsterdam
 
