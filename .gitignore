@@ -2,3 +2,4 @@
 Pod-PseudoPod-LaTeX-*
 .build/*
 build
+.prove
